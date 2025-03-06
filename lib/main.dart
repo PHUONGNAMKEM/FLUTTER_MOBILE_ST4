@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:flutter_project_presentation_lastsegment/hoangphuc_blog.dart';
 import 'package:flutter_project_presentation_lastsegment/profile.dart';
 import 'package:flutter_project_presentation_lastsegment/report.dart';
 import 'package:flutter_project_presentation_lastsegment/stats.dart';
@@ -61,6 +62,7 @@ class HomeScreenNow_State extends State<HomeScreenNow> {
     const MyApp_Report(),
     const MyApp_Stats(),
     const MyApp_Profile(),
+    const MyApp_Blog(),
   ];
 
   @override
@@ -106,6 +108,7 @@ class HomeScreenNow_State extends State<HomeScreenNow> {
           BottomNavigationBarItem(icon: Icon(FontAwesomeIcons.fileInvoice), label: "Reports"),
           BottomNavigationBarItem(icon: Icon(FontAwesomeIcons.chartBar), label: "Stats"),
           BottomNavigationBarItem(icon: Icon(FontAwesomeIcons.solidUser), label: "Profile"),
+          BottomNavigationBarItem(icon: Icon(FontAwesomeIcons.circleInfo), label: "About us"),
         ],
         selectedItemColor: Color.fromRGBO(69, 209, 253, 1), 
         unselectedItemColor: Color.fromRGBO(75,85,99, 1),
