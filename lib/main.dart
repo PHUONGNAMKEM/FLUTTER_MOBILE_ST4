@@ -1,6 +1,10 @@
 
 import 'package:flutter/material.dart';
+<<<<<<< HEAD
 import 'package:flutter_project_presentation_lastsegment/hoangphuc_blog.dart';
+=======
+import 'package:flutter_project_presentation_lastsegment/nam_demonhanh_dialog.dart';
+>>>>>>> ef554895abe6899702abffb5f141cc374dd64637
 import 'package:flutter_project_presentation_lastsegment/profile.dart';
 import 'package:flutter_project_presentation_lastsegment/report.dart';
 import 'package:flutter_project_presentation_lastsegment/stats.dart';
@@ -83,7 +87,12 @@ class HomeScreenNow_State extends State<HomeScreenNow> {
         actions: [
           IconButton(
             icon: Icon(Icons.notifications, color: Colors.white),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => MyAppDiaLog()),
+              );
+            },
           ),
           IconButton(
             // icon: Icon(Icons.person, color: Colors.white),
@@ -115,7 +124,12 @@ class HomeScreenNow_State extends State<HomeScreenNow> {
         backgroundColor: Color.fromRGBO(144, 202, 249, 1), 
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => AddReportScreen()),
+          );
+        },
         backgroundColor: Color.fromRGBO(69, 209, 253, 1), 
         child: Icon(Icons.add, color: Colors.white),
       ),
@@ -123,6 +137,25 @@ class HomeScreenNow_State extends State<HomeScreenNow> {
   }
 
 }
+
+// Widget cho trang Add Report
+class AddReportScreen extends StatelessWidget {
+  const AddReportScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Add Report"),
+        backgroundColor: Color.fromRGBO(69, 209, 253, 1),
+      ),
+      body: Center(
+        child: Text("This is Add Report Screen"),
+      ),
+    );
+  }
+}
+
 
 // Home Page 
 class HomeContent extends StatelessWidget {
