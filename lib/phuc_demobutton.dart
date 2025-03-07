@@ -9,7 +9,7 @@ class ButtonExampleApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text('Butotn Demo'),
+          title: const Text('Button Demo'),
         ),
         body: Center(
           child: OverflowBar(
@@ -25,13 +25,16 @@ class ButtonExampleApp extends StatelessWidget {
               print("Tôi là OutlinedButton , Bạn đã nhấn tôi rồi, dừng lại đi!");
              }
              ),
-            IconButton(icon: Icon(Icons.favorite), onPressed: () {
+            IconButton(
+              icon: Icon(Icons.favorite), 
+              onPressed: () {
               print("Tôi là IconButton, Bạn đã nhấn tôi rồi, dừng lại đi!");
             }
             ),
             FloatingActionButton(child: Icon(Icons.add), onPressed: () {
               print("Tôi là FloatingActionButton, Bạn đã nhấn tôi rồi, dừng lại đi!");
-            }
+            },
+            heroTag: 'buttonDemoFAB',
             ),
             const SizedBox(width: 10),
             ElevatedButton(

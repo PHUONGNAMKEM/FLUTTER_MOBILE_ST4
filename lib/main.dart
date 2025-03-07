@@ -62,8 +62,8 @@ class HomeScreenNow_State extends State<HomeScreenNow> {
     const MyApp_Report(),
     const MyApp_Stats(),
     const MyApp_Profile(),
-    //const LoginScreen_App()
     const MyApp_Blog(),
+    //const LoginScreen_App()
   ];
 
   @override
@@ -81,7 +81,12 @@ class HomeScreenNow_State extends State<HomeScreenNow> {
           child: IconButton(
             // icon: FaIcon(FontAwesomeIcons.bars, color: Colors.white, size: 24,),
             icon: Icon(Icons.menu, color: Colors.white, size: 24),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => MyAppDiaLog()),
+              );
+            },
           ),
         ),
         actions: [
