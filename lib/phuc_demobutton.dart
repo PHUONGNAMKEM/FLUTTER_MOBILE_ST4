@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+enum SampleItem { itemOne, itemTwo, itemThree }
+
 void main() => runApp(const ButtonDemoScreen());
 
 // class ButtonExampleApp extends StatelessWidget {
@@ -58,6 +60,8 @@ class ButtonDemoScreen extends StatefulWidget {
 class _ButtonDemoScreenState extends State<ButtonDemoScreen> {
   int counter = 0; 
   bool isFavorite = false; 
+  SampleItem? selectedItem;
+  bool tonalSelected = false;
 
   void _showSnackBar(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
@@ -96,12 +100,6 @@ class _ButtonDemoScreenState extends State<ButtonDemoScreen> {
                 setState(() {
                   counter++;
                 });
-              },
-              onLongPress: () {
-                Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => DemoElevated(),)
-                );
               },
               child: Text("Tăng (+1)"),
               style: ElevatedButton.styleFrom(
@@ -148,7 +146,31 @@ class _ButtonDemoScreenState extends State<ButtonDemoScreen> {
               icon: Icon(Icons.share),
               color: Colors.blue,
             ),
-
+            //Icon button fill
+            IconButton.filledTonal(
+              isSelected: tonalSelected,
+              icon: const Icon(Icons.settings_outlined),
+              selectedIcon: const Icon(Icons.settings),
+              onPressed: () {
+                setState(() {
+                  tonalSelected = !tonalSelected;
+                });
+              },
+            ),
+            PopupMenuButton<SampleItem>(
+                initialValue: selectedItem,
+                onSelected: (SampleItem item) {
+                  setState(() {
+                    selectedItem = item;
+                  });
+                },
+                itemBuilder:
+                    (BuildContext context) => <PopupMenuEntry<SampleItem>>[
+                      const PopupMenuItem<SampleItem>(value: SampleItem.itemOne, child: Text('Item 1')),
+                      const PopupMenuItem<SampleItem>(value: SampleItem.itemTwo, child: Text('Item 2')),
+                      const PopupMenuItem<SampleItem>(value: SampleItem.itemThree, child: Text('Item 3')),
+                    ],
+              ),
             ]
           ),
             SizedBox(height: 20),
@@ -161,10 +183,13 @@ class _ButtonDemoScreenState extends State<ButtonDemoScreen> {
           ],
         ),
       ),
-      // 5. FloatingActionButton: Hiển thị thông báo
+      // 5. FloatingActionButton
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          _showSnackBar("Bạn đã nhấn nút FAB!");
+          Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => DemoElevatedAndFAB(),)
+                );
         },
         child: Icon(Icons.add),
         backgroundColor: Colors.orange,
@@ -174,13 +199,13 @@ class _ButtonDemoScreenState extends State<ButtonDemoScreen> {
   }
 }
 
-class DemoElevated extends StatefulWidget {
-  const DemoElevated({super.key});
+class DemoElevatedAndFAB extends StatefulWidget {
+  const DemoElevatedAndFAB({super.key});
   @override
-  _DemoElevated createState() => _DemoElevated();
+  _DemoElevatedAndFAB createState() => _DemoElevatedAndFAB();
 }
 
-class _DemoElevated extends State<DemoElevated> {
+class _DemoElevatedAndFAB extends State<DemoElevatedAndFAB> {
   final _nameController = TextEditingController();
   final _messageController = TextEditingController();
 
@@ -241,3 +266,4 @@ class _DemoElevated extends State<DemoElevated> {
     );
   }
 }
+
