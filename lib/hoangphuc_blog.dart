@@ -164,7 +164,7 @@ class _MyAppExampleState extends State<MyAppExample> {
                                 onPressed: () {
                                   Navigator.push(
                                   context, 
-                                  MaterialPageRoute(builder: (context)=>ButtonDemoScreen())
+                                  MaterialPageRoute(builder: (context)=>ButtonDemoScreen ())
                                   );
                                 },
                                 style: ElevatedButton.styleFrom(

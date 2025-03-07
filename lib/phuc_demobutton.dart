@@ -97,6 +97,12 @@ class _ButtonDemoScreenState extends State<ButtonDemoScreen> {
                   counter++;
                 });
               },
+              onLongPress: () {
+                Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => DemoElevated(),)
+                );
+              },
               child: Text("Tăng (+1)"),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.green,
@@ -120,8 +126,10 @@ class _ButtonDemoScreenState extends State<ButtonDemoScreen> {
               ),
             ),
             SizedBox(height: 20),
-
             // 4. IconButton
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
             IconButton(
               onPressed: () {
                 setState(() {
@@ -135,6 +143,14 @@ class _ButtonDemoScreenState extends State<ButtonDemoScreen> {
               color: Colors.pink,
               iconSize: 40,
             ),
+            IconButton(
+              onPressed: (){}, 
+              icon: Icon(Icons.share),
+              color: Colors.blue,
+            ),
+
+            ]
+          ),
             SizedBox(height: 20),
 
             // Hiển thị giá trị counter
@@ -150,9 +166,77 @@ class _ButtonDemoScreenState extends State<ButtonDemoScreen> {
         onPressed: () {
           _showSnackBar("Bạn đã nhấn nút FAB!");
         },
-        child: Icon(Icons.info),
+        child: Icon(Icons.add),
         backgroundColor: Colors.orange,
         shape: CircleBorder(),
+      ),
+    );
+  }
+}
+
+class DemoElevated extends StatefulWidget {
+  const DemoElevated({super.key});
+  @override
+  _DemoElevated createState() => _DemoElevated();
+}
+
+class _DemoElevated extends State<DemoElevated> {
+  final _nameController = TextEditingController();
+  final _messageController = TextEditingController();
+
+  void _sendMessage() {
+    String sender = _nameController.text;
+    String message = _messageController.text;
+
+    if (sender.isNotEmpty && message.isNotEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Gửi thành công từ: $sender')),
+      );
+
+      // Reset form
+      _nameController.clear();
+      _messageController.clear();
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Vui lòng điền đầy đủ thông tin')),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('Gửi Tin Nhắn')),
+      body: Padding(
+        padding: EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            TextField(
+              controller: _nameController,
+              decoration: InputDecoration(
+                labelText: 'Tên người gửi',
+                border: OutlineInputBorder(),
+              ),
+            ),
+            SizedBox(height: 12),
+            TextField(
+              controller: _messageController,
+              maxLines: 5,
+              decoration: InputDecoration(
+                labelText: 'Nội dung',
+                border: OutlineInputBorder(),
+              ),
+            ),
+            SizedBox(height: 12),
+            Center(
+              child: ElevatedButton(
+                onPressed: _sendMessage,
+                child: Text('Gửi'),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
