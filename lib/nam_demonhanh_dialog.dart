@@ -183,7 +183,7 @@ class _MyAppDiaLogState extends State<MyAppDiaLog> {
     );
   }
 
-  // hiển thị AlertDialog
+  // Hiển thị AlertDialog
   void _showAlertDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -283,4 +283,5 @@ class _MyAppDiaLogState extends State<MyAppDiaLog> {
       },
     );
   }
+
 }
