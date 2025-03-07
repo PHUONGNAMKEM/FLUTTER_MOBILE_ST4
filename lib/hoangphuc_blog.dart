@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'phuc_demobutton.dart';
 void main() => runApp(MyApp_Blog());
 
 class MyApp_Blog extends StatelessWidget {
@@ -118,7 +118,7 @@ class _MyAppExampleState extends State<MyAppExample> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                "Lorem ipsum odor amet",
+                                "Chuyển sang demo button",
                                 style: TextStyle(fontWeight: FontWeight.w600, fontSize: 18),
                               ),
                             ],
@@ -141,7 +141,7 @@ class _MyAppExampleState extends State<MyAppExample> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              "Lorem ipsum odor amet, consectetuer adipiscing elit. Fermentum potenti erat consectetur himenaeos elementum efficitur.",
+                              "Demo các button cơ bản trong Flutter",
                               style: TextStyle(
                                 fontSize: 16,
                                 color: Color.fromRGBO(127, 134, 144, 1),
@@ -161,7 +161,12 @@ class _MyAppExampleState extends State<MyAppExample> {
                                   ),
                                 ),
                                 ElevatedButton(
-                                onPressed: () {},
+                                onPressed: () {
+                                  Navigator.push(
+                                  context, 
+                                  MaterialPageRoute(builder: (context)=>ButtonExampleApp())
+                                  );
+                                },
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: Color.fromRGBO(197, 221, 243, 1),
                                   foregroundColor: Color.fromRGBO(64, 140, 252, 1),
@@ -172,33 +177,12 @@ class _MyAppExampleState extends State<MyAppExample> {
                                   elevation: 1,
                                   textStyle: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
                                 ),
-                                child: Text("Go to"),
+                                child: Text("Go to demo"),
                               ),
                               ]
                             ),
                           ],
                         ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                "Reported by: Master Class",
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  color: Color.fromRGBO(127, 134, 144, 1),
-                                  fontWeight: FontWeight.w400,
-                                ),
-                              ),
-                              Text(
-                                "5h ago",
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  color: Color.fromRGBO(127, 134, 144, 1),
-                                  fontWeight: FontWeight.w400,
-                                ),
-                              ),
-                            ],
-                          ),
                         ],
                       ),
                     ),

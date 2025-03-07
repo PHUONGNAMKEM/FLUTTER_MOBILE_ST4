@@ -5,6 +5,7 @@ import 'package:flutter_project_presentation_lastsegment/profile.dart';
 import 'package:flutter_project_presentation_lastsegment/report.dart';
 import 'package:flutter_project_presentation_lastsegment/stats.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:flutter_project_presentation_lastsegment/hoangphuc_blog.dart';
 
 // class AppTheme {
 //   static ThemeData myTheme = ThemeData(
@@ -61,8 +62,8 @@ class HomeScreenNow_State extends State<HomeScreenNow> {
     const MyApp_Report(),
     const MyApp_Stats(),
     const MyApp_Profile(),
-    const LoginScreen_App(),
-    // const MyApp_Blog(),
+    //const LoginScreen_App()
+    const MyApp_Blog(),
   ];
 
   @override
@@ -129,6 +130,10 @@ class HomeScreenNow_State extends State<HomeScreenNow> {
           BottomNavigationBarItem(
             icon: Icon(FontAwesomeIcons.solidUser),
             label: "Profile",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(FontAwesomeIcons.circleInfo),
+            label: 'About us'
           ),
         ],
         selectedItemColor: Color.fromRGBO(69, 209, 253, 1),
