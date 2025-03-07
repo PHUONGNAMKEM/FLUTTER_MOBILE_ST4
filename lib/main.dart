@@ -71,13 +71,19 @@ class HomeScreenNow_State extends State<HomeScreenNow> {
         backgroundColor: Color.fromRGBO(69, 209, 253, 1),
         title: Text("Manage School Equipments", style: TextStyle(color: Colors.white, fontSize: 20)),
         titleSpacing: 0,
-        leading: Padding(
-          padding: EdgeInsets.zero,
-          child: IconButton(
-              // icon: FaIcon(FontAwesomeIcons.bars, color: Colors.white, size: 24,),
-              icon: Icon(Icons.menu, color: Colors.white, size: 24),
-              onPressed: () {},
-            ),
+        leading: Builder(
+          builder: (BuildContext leadingContext) {
+            return Padding(
+              padding: EdgeInsets.zero,
+              child: IconButton(
+                  // icon: FaIcon(FontAwesomeIcons.bars, color: Colors.white, size: 24,),
+                  icon: Icon(Icons.menu, color: Colors.white, size: 24),
+                  onPressed: () {
+                    Scaffold.of(leadingContext).openDrawer();
+                  },
+                ),
+            );
+          }
         ),
         actions: [
           IconButton(
@@ -127,6 +133,37 @@ class HomeScreenNow_State extends State<HomeScreenNow> {
         backgroundColor: Color.fromRGBO(69, 209, 253, 1), 
         child: Icon(Icons.add, color: Colors.white),
       ),
+
+      drawer: Drawer(
+          child: ListView(
+            padding: EdgeInsets.zero,
+            children: [
+              DrawerHeader( 
+                decoration: BoxDecoration(color: Color.fromRGBO(69, 209, 253, 1)),
+                child: Center(
+                  child: Text(
+                    'Nav Manager',
+                    style: TextStyle(color: Colors.white, fontSize: 24),
+                  ),
+                )
+              ),
+              ListTile(
+                title: Text('Home'),
+                onTap: () {
+                  Navigator.pop(context); // Đóng drawer
+                  print('Navigated to Home');
+                },
+              ),
+              ListTile(
+                title: Text('Profile'),
+                onTap: () {
+                  Navigator.pop(context);
+                  print('Navigated to Settings');
+                },
+              ),
+            ],
+          ),
+        ),
     );
   }
 

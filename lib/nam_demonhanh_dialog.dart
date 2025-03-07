@@ -16,15 +16,14 @@ class _MyAppDiaLogState extends State<MyAppDiaLog> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
+    return Scaffold(
         appBar: AppBar(
           title: Text('Scaffold Demo'),
           backgroundColor: Colors.blue,
           leading: Builder(
             builder : (BuildContext scaffoldContext) {
               return IconButton(
-                icon: Icon(Icons.menu),
+                icon: Icon(Icons.menu, color: Colors.white),
                 onPressed: () {
                   // Mở drawer
                   Scaffold.of(scaffoldContext).openDrawer();
@@ -34,9 +33,16 @@ class _MyAppDiaLogState extends State<MyAppDiaLog> {
           ),
           actions: [
             IconButton(
-              icon: Icon(Icons.search),
+              icon: Icon(Icons.search, color: Colors.white),
               onPressed: () {
                 print('Search pressed!');
+              },
+            ),
+            const SizedBox(width: 8,),
+            IconButton(
+              icon: Icon(Icons.arrow_back_ios_new, color: Colors.white,),
+              onPressed: () {
+                Navigator.pop(context); // Quay về trang trước
               },
             ),
           ],
@@ -89,11 +95,31 @@ class _MyAppDiaLogState extends State<MyAppDiaLog> {
           child: Icon(Icons.add),
         ),
         drawer: Drawer(
+          backgroundColor: Colors.white,
           child: ListView(
             padding: EdgeInsets.zero,
             children: [
               DrawerHeader(
-                decoration: BoxDecoration(color: Colors.blue),
+                decoration: BoxDecoration(
+                  color: Colors.blue
+                  //   gradient: LinearGradient(
+                  //     colors: [Colors.blue, Colors.blueAccent], // Gradient màu cho header
+                  //     begin: Alignment.topLeft,
+                  //     end: Alignment.bottomRight,
+                  //   ),
+                  //   borderRadius: BorderRadius.only(
+                  //     bottomLeft: Radius.circular(20.0),
+                  //     bottomRight: Radius.circular(20.0),
+                  //   ),
+                  //   boxShadow: [
+                  //     BoxShadow(
+                  //       color: Colors.black26,
+                  //       blurRadius: 10.0,
+                  //       offset: Offset(0, 4),
+                  //     ),
+                  //   ],
+                  // ),
+                ),
                 child: Text(
                   'Drawer Header',
                   style: TextStyle(color: Colors.white, fontSize: 24),
@@ -138,8 +164,7 @@ class _MyAppDiaLogState extends State<MyAppDiaLog> {
             child: Text('Footer Action'),
           ),
         ],
-      ),
-    );
+      );
   }
 
   // hiển thị SnackBar
