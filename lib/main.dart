@@ -145,11 +145,11 @@ class HomeScreenNow_State extends State<HomeScreenNow> {
         unselectedItemColor: Color.fromRGBO(75, 85, 99, 1),
         backgroundColor: Color.fromRGBO(144, 202, 249, 1),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        backgroundColor: Color.fromRGBO(69, 209, 253, 1),
-        child: Icon(Icons.add, color: Colors.white),
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () {},
+      //   backgroundColor: Color.fromRGBO(69, 209, 253, 1),
+      //   child: Icon(Icons.add, color: Colors.white),
+      // ),
     );
   }
 }
