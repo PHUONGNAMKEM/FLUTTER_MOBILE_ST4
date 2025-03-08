@@ -184,7 +184,7 @@ class _AddProjectScreenState extends State<AddProjectScreen> {
             // ),
             const Icon(
               Icons.calendar_today,
-              color: Color.fromARGB(255, 69, 259, 203),
+              color: Color.fromRGBO(69, 209, 253, 1),
             ),
             Text(
               date != null
@@ -237,7 +237,7 @@ class _AddProjectScreenState extends State<AddProjectScreen> {
             // ),
             const Icon(
               Icons.access_time_sharp,
-              color: Color.fromARGB(255, 69, 259, 203),
+              color: Color.fromRGBO(69, 209, 253, 1),
             ),
             Text(
               time != null
@@ -269,7 +269,7 @@ class _AddProjectScreenState extends State<AddProjectScreen> {
             // ),
             const Icon(
               Icons.door_front_door_outlined,
-              color: Color.fromARGB(255, 69, 259, 203),
+              color: Color.fromRGBO(69, 209, 253, 1),
             ),
             Text(
               selectedRoom ?? "Select Room",
@@ -321,7 +321,7 @@ class _AddProjectScreenState extends State<AddProjectScreen> {
   Widget _buildSubmitButton() {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
-        backgroundColor: Color.fromARGB(255, 69, 259, 203),
+        backgroundColor: Color.fromRGBO(69, 209, 253, 1),
         padding: const EdgeInsets.symmetric(vertical: 14),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       ),
