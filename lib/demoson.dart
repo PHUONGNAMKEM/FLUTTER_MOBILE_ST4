@@ -97,133 +97,155 @@ class _DemoFormScreenState extends State<DemoFormScreen> {
           ),
         ],
       ),
-      body: Padding(
-        padding: EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Nhập tên
-            Text("Tên:", style: TextStyle(fontSize: 16)),
-            Padding(
-              padding: EdgeInsets.fromLTRB(12, 10, 0, 0),
-              child: TextField(
-                controller: nameController,
-                decoration: InputDecoration(
-                  hintText: "Nhập tên của bạn",
-                  border: OutlineInputBorder(),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Nhập tên
+              Text("Tên:", style: TextStyle(fontSize: 16)),
+              Padding(
+                padding: EdgeInsets.fromLTRB(12, 10, 0, 0),
+                child: TextField(
+                  controller: nameController,
+                  decoration: InputDecoration(
+                    hintText: "Nhập tên của bạn",
+                    border: OutlineInputBorder(),
+                  ),
                 ),
               ),
-            ),
 
-            SizedBox(height: 16),
+              SizedBox(height: 16),
 
-            // Chọn giới tính
-            Text("Giới tính:", style: TextStyle(fontSize: 16)),
-            Row(
-              children: [
-                Radio(
-                  value: "Nam",
-                  groupValue: gender,
-                  onChanged: (value) {
-                    setState(() {
-                      gender = value as String?;
-                    });
-                  },
-                ),
-                Text("Nam"),
-                SizedBox(width: 20),
-                Radio(
-                  value: "Nữ",
-                  groupValue: gender,
-                  onChanged: (value) {
-                    setState(() {
-                      gender = value as String?;
-                    });
-                  },
-                ),
-                Text("Nữ"),
-              ],
-            ),
-            SizedBox(height: 16),
-
-            // Chọn sở thích
-            Text("Sở thích:", style: TextStyle(fontSize: 16)),
-            Row(
-              children: [
-                Checkbox(
-                  value: likesCoding,
-                  onChanged: (value) {
-                    setState(() {
-                      likesCoding = value!;
-                    });
-                  },
-                ),
-                Text("Lập trình"),
-                SizedBox(width: 20),
-                Checkbox(
-                  value: likesMusic,
-                  onChanged: (value) {
-                    setState(() {
-                      likesMusic = value!;
-                    });
-                  },
-                ),
-                Text("Âm nhạc"),
-              ],
-            ),
-            SizedBox(height: 16),
-            Text("Chọn quốc gia:", style: TextStyle(fontSize: 16)),
-
-            // Dropdown chọn quốc gia
-            Padding(
-              padding: EdgeInsets.fromLTRB(20, 15, 0, 0),
-              child: Column(
+              // Chọn giới tính
+              Text("Giới tính:", style: TextStyle(fontSize: 16)),
+              Row(
                 children: [
-                  DropdownButton<String>(
-                    value: selectedCountry,
-                    items:
-                        ["Việt Nam", "Mỹ", "Nhật Bản", "Hàn Quốc", "Pháp"]
-                            .map(
-                              (country) => DropdownMenuItem(
-                                value: country,
-                                child: Text(country),
-                              ),
-                            )
-                            .toList(),
+                  Radio(
+                    value: "Nam",
+                    groupValue: gender,
                     onChanged: (value) {
                       setState(() {
-                        selectedCountry = value!;
+                        gender = value as String?;
                       });
                     },
                   ),
+                  Text("Nam"),
+                  SizedBox(width: 20),
+                  Radio(
+                    value: "Nữ",
+                    groupValue: gender,
+                    onChanged: (value) {
+                      setState(() {
+                        gender = value as String?;
+                      });
+                    },
+                  ),
+                  Text("Nữ"),
                 ],
               ),
-            ),
+              SizedBox(height: 16),
 
-            SizedBox(height: 20),
-
-            // Nút Submit
-            Center(
-              child: ElevatedButton(
-                onPressed: _submitForm,
-                child: Text("Xác nhận"),
+              // Chọn sở thích
+              Text("Sở thích:", style: TextStyle(fontSize: 16)),
+              Row(
+                children: [
+                  Checkbox(
+                    value: likesCoding,
+                    onChanged: (value) {
+                      setState(() {
+                        likesCoding = value!;
+                      });
+                    },
+                  ),
+                  Text("Lập trình"),
+                  SizedBox(width: 20),
+                  Checkbox(
+                    value: likesMusic,
+                    onChanged: (value) {
+                      setState(() {
+                        likesMusic = value!;
+                      });
+                    },
+                  ),
+                  Text("Âm nhạc"),
+                ],
               ),
-            ),
+              SizedBox(height: 16),
+              Text("Chọn quốc gia:", style: TextStyle(fontSize: 16)),
 
-            SizedBox(height: 20),
+              // Dropdown chọn quốc gia
+              Padding(
+                padding: EdgeInsets.fromLTRB(20, 15, 0, 0),
+                child: Column(
+                  children: [
+                    DropdownButton<String>(
+                      value: selectedCountry,
+                      items:
+                          ["Việt Nam", "Mỹ", "Nhật Bản", "Hàn Quốc", "Pháp"]
+                              .map(
+                                (country) => DropdownMenuItem(
+                                  value: country,
+                                  child: Text(country),
+                                ),
+                              )
+                              .toList(),
+                      onChanged: (value) {
+                        setState(() {
+                          selectedCountry = value!;
+                        });
+                      },
+                    ),
+                  ],
+                ),
+              ),
 
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => LoginScreen_App()),
-                );
-              },
-              child: Text("Quay Lại Login Screen"),
-            ),
-          ],
+              SizedBox(height: 20),
+
+              // Nút Submit
+              Center(
+                child: ElevatedButton(
+                  onPressed: _submitForm,
+                  child: Text(
+                    "Xác nhận",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all(
+                      Colors.blueAccent,
+                    ),
+                  ),
+                ),
+              ),
+
+              SizedBox(height: 20),
+              Center(
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => LoginScreen_App(),
+                      ),
+                    );
+                  },
+                  child: Text(
+                    "Quay Lại Login Screen",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all(
+                      Color.fromRGBO(69, 209, 253, 1),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
+      backgroundColor: Colors.white,
     );
   }
 }

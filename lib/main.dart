@@ -37,7 +37,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: HomeScreenNow(),
+      home: HomeScreenNow(username: "Mặc Định"),
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primaryColor: Color.fromRGBO(69, 209, 253, 1), // Màu chủ đạo
@@ -48,7 +48,12 @@ class MyApp extends StatelessWidget {
 }
 
 class HomeScreenNow extends StatefulWidget {
-  const HomeScreenNow({super.key});
+  final String username; // Thêm thuộc tính nhận dữ liệu
+
+  const HomeScreenNow({
+    super.key,
+    required this.username,
+  }); // Constructor có tham số
 
   @override
   State<HomeScreenNow> createState() => HomeScreenNow_State();
@@ -104,7 +109,12 @@ class HomeScreenNow_State extends State<HomeScreenNow> {
           IconButton(
             // icon: Icon(Icons.person, color: Colors.white),
             icon: FaIcon(FontAwesomeIcons.circleUser, color: Colors.white),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => LoginScreen_App()),
+              );
+            },
           ),
         ],
       ),
@@ -166,7 +176,7 @@ class HomeScreenNow_State extends State<HomeScreenNow> {
               decoration: BoxDecoration(color: Color.fromRGBO(69, 209, 253, 1)),
               child: Center(
                 child: Text(
-                  'Nav Manager',
+                  'Hello, ${widget.username} !',
                   style: TextStyle(color: Colors.white, fontSize: 24),
                 ),
               ),
