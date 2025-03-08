@@ -15,14 +15,28 @@ class LoginScreen_App extends StatelessWidget {
   }
 }
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
+  @override
+  _LoginScreenState createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  @override
+  void dispose() {
+    _usernameController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       body: Center(
         child: SingleChildScrollView(
-          // Bọc SingleChildScrollView để cuộn khi nội dung quá dài
           child: Padding(
             padding: const EdgeInsets.all(20.0),
             child: Column(
@@ -42,6 +56,7 @@ class LoginScreen extends StatelessWidget {
                 ),
                 SizedBox(height: 20),
                 TextField(
+                  controller: _usernameController,
                   decoration: InputDecoration(
                     prefixIcon: Icon(Icons.email),
                     labelText: 'Username',
@@ -50,6 +65,7 @@ class LoginScreen extends StatelessWidget {
                 ),
                 SizedBox(height: 15),
                 TextField(
+                  controller: _passwordController,
                   obscureText: true,
                   decoration: InputDecoration(
                     prefixIcon: Icon(Icons.lock),
@@ -65,10 +81,11 @@ class LoginScreen extends StatelessWidget {
                     backgroundColor: Color.fromRGBO(69, 209, 253, 1),
                   ),
                   onPressed: () {
+                    String username = _usernameController.text;
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => HomeScreenNow(username: "son"),
+                        builder: (context) => HomeScreenNow(username: username),
                       ),
                     );
                   },
@@ -109,11 +126,6 @@ class LoginScreen extends StatelessWidget {
                     ),
                   ],
                 ),
-                // SizedBox(height: 20),
-                // Text(
-                //   'Terms of Service  •  Privacy Policy',
-                //   style: TextStyle(color: Colors.grey, fontSize: 12),
-                // ),
                 SizedBox(height: 10),
                 ElevatedButton(
                   onPressed: () {
