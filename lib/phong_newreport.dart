@@ -1,16 +1,13 @@
 import 'package:flutter/material.dart';
 
-void main() => runApp(MyApp());
+void main() => runApp(MyReport());
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class MyReport extends StatelessWidget {
+  const MyReport({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: AddProjectScreen(),
-    );
+    return AddProjectScreen(); // Không cần MaterialApp ở đây
   }
 }
 
@@ -47,7 +44,16 @@ class _AddProjectScreenState extends State<AddProjectScreen> {
           ),
         ),
         centerTitle: true,
-        leading: const Icon(Icons.arrow_back, color: Colors.black),
+        leading: Builder(
+          builder: (BuildContext backContext) {
+            return IconButton(
+              onPressed: () {
+                Navigator.pop(backContext);
+              },
+              icon: Icon(Icons.arrow_back, color: Colors.black),
+            );
+          },
+        ),
         actions: const [
           Icon(Icons.notifications, color: Colors.black),
           SizedBox(width: 10),

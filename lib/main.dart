@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_project_presentation_lastsegment/nam_demonhanh_dialog.dart';
+import 'package:flutter_project_presentation_lastsegment/phong_newreport.dart';
 import 'package:flutter_project_presentation_lastsegment/son_loginScreen.dart';
 import 'package:flutter_project_presentation_lastsegment/profile.dart';
 import 'package:flutter_project_presentation_lastsegment/report.dart';
@@ -150,7 +151,7 @@ class HomeScreenNow_State extends State<HomeScreenNow> {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => AddReportScreen()),
+            MaterialPageRoute(builder: (context) => MyReport()),
           );
         },
         backgroundColor: Color.fromRGBO(69, 209, 253, 1),
