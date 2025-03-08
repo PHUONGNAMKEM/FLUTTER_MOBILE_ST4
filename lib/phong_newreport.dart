@@ -194,7 +194,7 @@ class _AddProjectScreenState extends State<AddProjectScreen> {
   Widget _buildSubmitButton() {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.blue,
+        backgroundColor: Color.fromRGBO(69, 209, 253, 1),
         padding: const EdgeInsets.symmetric(vertical: 14),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       ),
@@ -251,7 +251,7 @@ class _AddProjectScreenState extends State<AddProjectScreen> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Icon(icon, color: Colors.blue),
+                Icon(icon, color: Color.fromRGBO(69, 209, 253, 1)),
                 Text(
                   text,
                   style: TextStyle(color: isError ? Colors.red : Colors.grey),
