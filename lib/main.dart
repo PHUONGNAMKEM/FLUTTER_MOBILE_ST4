@@ -339,13 +339,17 @@ class HomeContent extends StatelessWidget {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(
-                                "Projector Malfunction",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 18,
+                              Container(
+                                // margin: EdgeInsets.fromLTRB(0, 0, 0, 12),
+                                child: Text(
+                                  "Projector Malfunction",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 18,
+                                  ),
                                 ),
                               ),
+                              const SizedBox(height: 50),
                               ElevatedButton(
                                 onPressed: () {},
                                 style: ElevatedButton.styleFrom(
@@ -381,6 +385,23 @@ class HomeContent extends StatelessWidget {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
+                              Expanded(
+                                child: Text(
+                                  "Trường đại học Công Thương TP.HCM",
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: Color.fromRGBO(127, 134, 144, 1),
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 1,
+                                ),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
                               Text(
                                 "Room A206",
                                 style: TextStyle(
@@ -395,12 +416,16 @@ class HomeContent extends StatelessWidget {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(
-                                "Screen flickering and no display output",
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  color: Color.fromRGBO(127, 134, 144, 1),
-                                  fontWeight: FontWeight.w400,
+                              Expanded(
+                                child: Text(
+                                  "Screen flickering and no display output",
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: Color.fromRGBO(127, 134, 144, 1),
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 2,
                                 ),
                               ),
                             ],
@@ -416,8 +441,114 @@ class HomeContent extends StatelessWidget {
                                   fontWeight: FontWeight.w400,
                                 ),
                               ),
+                              Row(
+                                children: [
+                                  Text(
+                                    "5h ago",
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      color: Color.fromRGBO(127, 134, 144, 1),
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 6),
+                                  IconButton(
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => HistoryScreen(),
+                                        ),
+                                      );
+                                    },
+                                    icon: Icon(Icons.history_sharp),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Card(
+                    color: Colors.white,
+                    elevation: 2,
+                    shadowColor: Colors.grey.withOpacity(0.5),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Padding(
+                      padding: EdgeInsets.all(16),
+                      child: Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Container(
+                                // margin: EdgeInsets.fromLTRB(0, 0, 0, 12),
+                                child: Text(
+                                  "Projector Malfunction",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 18,
+                                  ),
+                                ),
+                              ),
+                              ElevatedButton(
+                                onPressed: () {},
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Color.fromRGBO(
+                                    254,
+                                    249,
+                                    195,
+                                    1,
+                                  ),
+                                  foregroundColor: Color.fromRGBO(
+                                    206,
+                                    148,
+                                    22,
+                                    1,
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 16,
+                                    vertical: 8,
+                                  ),
+                                  elevation: 1,
+                                  textStyle: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                                child: Text("In Progress"),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  "Trường đại học Công Thương TP.HCM",
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: Color.fromRGBO(127, 134, 144, 1),
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 1,
+                                ),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
                               Text(
-                                "5h ago",
+                                "Room A206",
                                 style: TextStyle(
                                   fontSize: 16,
                                   color: Color.fromRGBO(127, 134, 144, 1),
@@ -426,10 +557,211 @@ class HomeContent extends StatelessWidget {
                               ),
                             ],
                           ),
+                          const SizedBox(height: 10),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  "Screen flickering and no display output",
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: Color.fromRGBO(127, 134, 144, 1),
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 2,
+                                ),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "Reported by: Master Class",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Color.fromRGBO(127, 134, 144, 1),
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                              Row(
+                                children: [
+                                  Text(
+                                    "5h ago",
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      color: Color.fromRGBO(127, 134, 144, 1),
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 6),
+                                  IconButton(
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => HistoryScreen(),
+                                        ),
+                                      );
+                                    },
+                                    icon: Icon(Icons.history_sharp),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
                         ],
                       ),
                     ),
                   ),
+                  Card(
+                    color: Colors.white,
+                    elevation: 2,
+                    shadowColor: Colors.grey.withOpacity(0.5),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Padding(
+                      padding: EdgeInsets.all(16),
+                      child: Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Container(
+                                // margin: EdgeInsets.fromLTRB(0, 0, 0, 12),
+                                child: Text(
+                                  "Projector Malfunction",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 18,
+                                  ),
+                                ),
+                              ),
+                              ElevatedButton(
+                                onPressed: () {},
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Color.fromRGBO(
+                                    220,
+                                    252,
+                                    231,
+                                    1,
+                                  ),
+                                  foregroundColor: Color.fromRGBO(
+                                    24,
+                                    164,
+                                    76,
+                                    1,
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 16,
+                                    vertical: 8,
+                                  ),
+                                  elevation: 1,
+                                  textStyle: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                                child: Text("Completed"),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  "Trường đại học Công Thương TP.HCM",
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: Color.fromRGBO(127, 134, 144, 1),
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 1,
+                                ),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "Room A206",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Color.fromRGBO(127, 134, 144, 1),
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 10),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  "Screen flickering and no display output",
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: Color.fromRGBO(127, 134, 144, 1),
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 2,
+                                ),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "Reported by: Master Class",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Color.fromRGBO(127, 134, 144, 1),
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                              Row(
+                                children: [
+                                  Text(
+                                    "5h ago",
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      color: Color.fromRGBO(127, 134, 144, 1),
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 6),
+                                  IconButton(
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => HistoryScreen(),
+                                        ),
+                                      );
+                                    },
+                                    icon: Icon(Icons.history_sharp),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+
                   Card(
                     color: Colors.white,
                     elevation: 2,
@@ -500,13 +832,19 @@ class HomeContent extends StatelessWidget {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(
-                                "Temperature control not working properly",
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  color: Color.fromRGBO(127, 134, 144, 1),
-                                  fontWeight: FontWeight.w400,
-                                ),
+                              Row(
+                                children: [
+                                  Text(
+                                    "Temperature control not working properly",
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      color: Color.fromRGBO(127, 134, 144, 1),
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 2,
+                                  ),
+                                ],
                               ),
                             ],
                           ),
@@ -521,13 +859,29 @@ class HomeContent extends StatelessWidget {
                                   fontWeight: FontWeight.w400,
                                 ),
                               ),
-                              Text(
-                                "5h ago",
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  color: Color.fromRGBO(127, 134, 144, 1),
-                                  fontWeight: FontWeight.w400,
-                                ),
+                              Row(
+                                children: [
+                                  Text(
+                                    "5h ago",
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      color: Color.fromRGBO(127, 134, 144, 1),
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 6),
+                                  IconButton(
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => HistoryScreen(),
+                                        ),
+                                      );
+                                    },
+                                    icon: Icon(Icons.history_sharp),
+                                  ),
+                                ],
                               ),
                             ],
                           ),
@@ -626,13 +980,29 @@ class HomeContent extends StatelessWidget {
                                   fontWeight: FontWeight.w400,
                                 ),
                               ),
-                              Text(
-                                "5h ago",
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  color: Color.fromRGBO(127, 134, 144, 1),
-                                  fontWeight: FontWeight.w400,
-                                ),
+                              Row(
+                                children: [
+                                  Text(
+                                    "5h ago",
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      color: Color.fromRGBO(127, 134, 144, 1),
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 6),
+                                  IconButton(
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => HistoryScreen(),
+                                        ),
+                                      );
+                                    },
+                                    icon: Icon(Icons.history_sharp),
+                                  ),
+                                ],
                               ),
                             ],
                           ),
@@ -655,3 +1025,259 @@ class HomeContent extends StatelessWidget {
 
 // Stats Page
 // Mình sẽ chuyển hướng giao diện qua file stats.dart
+
+// Giao diện History của Reports
+class HistoryScreen extends StatelessWidget {
+  const HistoryScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text("Lịch sử")),
+      body: Column(
+        children: [
+          Card(
+            color: Colors.white,
+            elevation: 2,
+            shadowColor: Colors.grey.withOpacity(0.5),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Padding(
+              padding: EdgeInsets.all(16),
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        // margin: EdgeInsets.fromLTRB(0, 0, 0, 12),
+                        child: Text(
+                          "Reported by: Student",
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 18,
+                          ),
+                        ),
+                      ),
+                      ElevatedButton(
+                        onPressed: () {},
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Color.fromRGBO(254, 226, 226, 1),
+                          foregroundColor: Color.fromRGBO(225, 67, 67, 1),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 8,
+                          ),
+                          elevation: 1,
+                          textStyle: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        child: Text("Urgent"),
+                      ),
+                    ],
+                  ),
+
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text(
+                        "7:19 PM",
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Color.fromRGBO(127, 134, 144, 1),
+                          fontWeight: FontWeight.w400,
+                        ),
+                        textAlign: TextAlign.start,
+                      ),
+                      const SizedBox(width: 8),
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text(
+                        "19/03/2025",
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Color.fromRGBO(127, 134, 144, 1),
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Card(
+            color: Colors.white,
+            elevation: 2,
+            shadowColor: Colors.grey.withOpacity(0.5),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Padding(
+              padding: EdgeInsets.all(16),
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        // margin: EdgeInsets.fromLTRB(0, 0, 0, 12),
+                        child: Text(
+                          "Reported by: Engineer",
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 18,
+                          ),
+                        ),
+                      ),
+                      ElevatedButton(
+                        onPressed: () {},
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Color.fromRGBO(254, 249, 195, 1),
+                          foregroundColor: Color.fromRGBO(206, 148, 22, 1),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 8,
+                          ),
+                          elevation: 1,
+                          textStyle: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        child: Text("In Progress"),
+                      ),
+                    ],
+                  ),
+
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text(
+                        "7:19 PM",
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Color.fromRGBO(127, 134, 144, 1),
+                          fontWeight: FontWeight.w400,
+                        ),
+                        textAlign: TextAlign.start,
+                      ),
+                      const SizedBox(width: 8),
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text(
+                        "19/03/2025",
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Color.fromRGBO(127, 134, 144, 1),
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Card(
+            color: Colors.white,
+            elevation: 2,
+            shadowColor: Colors.grey.withOpacity(0.5),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Padding(
+              padding: EdgeInsets.all(16),
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        // margin: EdgeInsets.fromLTRB(0, 0, 0, 12),
+                        child: Text(
+                          "Reported by: Engineer",
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 18,
+                          ),
+                        ),
+                      ),
+                      ElevatedButton(
+                        onPressed: () {},
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Color.fromRGBO(220, 252, 231, 1),
+                          foregroundColor: Color.fromRGBO(24, 164, 76, 1),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 8,
+                          ),
+                          elevation: 1,
+                          textStyle: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        child: Text("Completed"),
+                      ),
+                    ],
+                  ),
+
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text(
+                        "7:19 PM",
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Color.fromRGBO(127, 134, 144, 1),
+                          fontWeight: FontWeight.w400,
+                        ),
+                        textAlign: TextAlign.start,
+                      ),
+                      const SizedBox(width: 8),
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text(
+                        "19/03/2025",
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Color.fromRGBO(127, 134, 144, 1),
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
