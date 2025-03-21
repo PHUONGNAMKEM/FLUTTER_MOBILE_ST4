@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_project_presentation_lastsegment/SignInScreen.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_project_presentation_lastsegment/demoson.dart';
 import 'package:flutter_project_presentation_lastsegment/main.dart';
@@ -118,7 +119,14 @@ class _LoginScreenState extends State<LoginScreen> {
                   children: [
                     Text('New to our platform? '),
                     TextButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => SignUpScreen(),
+                          ),
+                        );
+                      },
                       child: Text(
                         'Create Account',
                         style: TextStyle(fontWeight: FontWeight.bold),
@@ -127,23 +135,6 @@ class _LoginScreenState extends State<LoginScreen> {
                   ],
                 ),
                 SizedBox(height: 10),
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => DemoFormScreen()),
-                    );
-                  },
-                  child: Text(
-                    "Đi Đến Demo Screen",
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all(
-                      Color.fromRGBO(69, 209, 253, 1),
-                    ),
-                  ),
-                ),
               ],
             ),
           ),

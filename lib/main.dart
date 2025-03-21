@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_project_presentation_lastsegment/Schools.dart';
+import 'package:flutter_project_presentation_lastsegment/Users.dart';
 import 'package:flutter_project_presentation_lastsegment/nam_demonhanh_dialog.dart';
 import 'package:flutter_project_presentation_lastsegment/phong_newreport.dart';
 import 'package:flutter_project_presentation_lastsegment/son_loginScreen.dart';
@@ -65,8 +67,8 @@ class HomeScreenNow_State extends State<HomeScreenNow> {
   // Thêm ở đây 1 list các page mà mình muốn chuyển hướng trong navigation bar
   final List<Widget> pages = [
     const HomeContent(),
-    const MyApp_Report(),
-    const MyApp_Stats(),
+    const Users(),
+    const SchoolsScreen(),
     const MyApp_Profile(),
     const MyApp_Blog(),
     //const LoginScreen_App()
@@ -137,12 +139,12 @@ class HomeScreenNow_State extends State<HomeScreenNow> {
             label: "Home",
           ),
           BottomNavigationBarItem(
-            icon: Icon(FontAwesomeIcons.fileInvoice),
-            label: "Reports",
+            icon: Icon(FontAwesomeIcons.solidUser),
+            label: "Users",
           ),
           BottomNavigationBarItem(
-            icon: Icon(FontAwesomeIcons.chartBar),
-            label: "Stats",
+            icon: Icon(FontAwesomeIcons.school),
+            label: "Schools",
           ),
           BottomNavigationBarItem(
             icon: Icon(FontAwesomeIcons.solidUser),
@@ -157,16 +159,22 @@ class HomeScreenNow_State extends State<HomeScreenNow> {
         unselectedItemColor: Color.fromRGBO(75, 85, 99, 1),
         backgroundColor: Color.fromRGBO(144, 202, 249, 1),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => MyReport()),
-          );
-        },
-        backgroundColor: Color.fromRGBO(69, 209, 253, 1),
-        child: Icon(Icons.add, color: Colors.white),
-      ),
+      floatingActionButton:
+          currentPage ==
+                  0 // Kiểm tra nếu đang ở HomeContent
+              ? FloatingActionButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => MyReport(),
+                    ), // Chuyển đến màn hình báo cáo
+                  );
+                },
+                backgroundColor: Color.fromRGBO(69, 209, 253, 1),
+                child: Icon(Icons.add, color: Colors.white),
+              )
+              : null, // Không hiển thị FAB nếu không phải HomeContent
 
       drawer: Drawer(
         child: ListView(

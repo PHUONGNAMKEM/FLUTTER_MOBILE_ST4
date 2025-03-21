@@ -231,7 +231,7 @@ class _SchoolsScreenState extends State<SchoolsScreen> {
               ),
       floatingActionButton: FloatingActionButton(
         onPressed: _addOrEditSchool,
-        backgroundColor: Colors.blue,
+        backgroundColor: const Color.fromRGBO(69, 209, 253, 1),
         foregroundColor: Colors.white,
         child: const Icon(Icons.add),
       ),
