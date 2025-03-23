@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:flutter_project_presentation_lastsegment/main.dart';
-import 'package:flutter_project_presentation_lastsegment/nam_demonhanh_dialog.dart';
+import 'package:flutter_project_presentation_lastsegment/nam/main.dart';
+import 'package:flutter_project_presentation_lastsegment/nam/nam_demonhanh_dialog.dart';
 import 'package:flutter_project_presentation_lastsegment/son_loginScreen.dart';
 import 'package:flutter_project_presentation_lastsegment/profile.dart';
 import 'package:flutter_project_presentation_lastsegment/report.dart';
@@ -14,6 +14,8 @@ void main() {
 }
 
 class DemoFormScreen extends StatefulWidget {
+  const DemoFormScreen({super.key});
+
   @override
   _DemoFormScreenState createState() => _DemoFormScreenState();
 }
@@ -127,7 +129,7 @@ class _DemoFormScreenState extends State<DemoFormScreen> {
                     groupValue: gender,
                     onChanged: (value) {
                       setState(() {
-                        gender = value as String?;
+                        gender = value;
                       });
                     },
                   ),
@@ -138,7 +140,7 @@ class _DemoFormScreenState extends State<DemoFormScreen> {
                     groupValue: gender,
                     onChanged: (value) {
                       setState(() {
-                        gender = value as String?;
+                        gender = value;
                       });
                     },
                   ),
@@ -207,14 +209,12 @@ class _DemoFormScreenState extends State<DemoFormScreen> {
               Center(
                 child: ElevatedButton(
                   onPressed: _submitForm,
+                  style: ButtonStyle(
+                    backgroundColor: WidgetStateProperty.all(Colors.blueAccent),
+                  ),
                   child: Text(
                     "Xác nhận",
                     style: TextStyle(color: Colors.white),
-                  ),
-                  style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all(
-                      Colors.blueAccent,
-                    ),
                   ),
                 ),
               ),
@@ -230,14 +230,14 @@ class _DemoFormScreenState extends State<DemoFormScreen> {
                       ),
                     );
                   },
+                  style: ButtonStyle(
+                    backgroundColor: WidgetStateProperty.all(
+                      Color.fromRGBO(69, 209, 253, 1),
+                    ),
+                  ),
                   child: Text(
                     "Quay Lại Login Screen",
                     style: TextStyle(color: Colors.white),
-                  ),
-                  style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all(
-                      Color.fromRGBO(69, 209, 253, 1),
-                    ),
                   ),
                 ),
               ),

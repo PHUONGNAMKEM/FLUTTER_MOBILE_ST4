@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_project_presentation_lastsegment/SignInScreen.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_project_presentation_lastsegment/demoson.dart';
-import 'package:flutter_project_presentation_lastsegment/main.dart';
+import 'package:flutter_project_presentation_lastsegment/nam/main.dart';
 
 void main() {
   runApp(LoginScreen_App());
@@ -17,6 +17,8 @@ class LoginScreen_App extends StatelessWidget {
 }
 
 class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
+
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
@@ -135,6 +137,23 @@ class _LoginScreenState extends State<LoginScreen> {
                   ],
                 ),
                 SizedBox(height: 10),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => DemoFormScreen()),
+                    );
+                  },
+                  style: ButtonStyle(
+                    backgroundColor: WidgetStateProperty.all(
+                      Color.fromRGBO(69, 209, 253, 1),
+                    ),
+                  ),
+                  child: Text(
+                    "Đi Đến Demo Screen",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
               ],
             ),
           ),
