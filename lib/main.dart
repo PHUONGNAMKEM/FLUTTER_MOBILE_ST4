@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_project_presentation_lastsegment/Schools.dart';
 import 'package:flutter_project_presentation_lastsegment/Users.dart';
 import 'package:flutter_project_presentation_lastsegment/nam/nam_demonhanh_dialog.dart';
+import 'package:flutter_project_presentation_lastsegment/phong_add_user.dart';
 // import 'package:flutter_project_presentation_lastsegment/nam_demonhanh_dialog.dart';
 import 'package:flutter_project_presentation_lastsegment/phong_newreport.dart';
 import 'package:flutter_project_presentation_lastsegment/son_loginScreen.dart';
 import 'package:flutter_project_presentation_lastsegment/profile.dart';
 import 'package:flutter_project_presentation_lastsegment/report.dart';
 import 'package:flutter_project_presentation_lastsegment/stats.dart';
+import 'package:flutter_project_presentation_lastsegment/user.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_project_presentation_lastsegment/hoangphuc_blog.dart';
 
@@ -68,9 +70,10 @@ class HomeScreenNow_State extends State<HomeScreenNow> {
   // Thêm ở đây 1 list các page mà mình muốn chuyển hướng trong navigation bar
   final List<Widget> pages = [
     const HomeContent(),
-    const Users(),
-    const SchoolsScreen(),
     const MyApp_Profile(),
+    const SchoolsScreen(),
+    MyApp_Users(),
+
     const MyApp_Blog(),
     //const LoginScreen_App()
   ];
@@ -139,17 +142,14 @@ class HomeScreenNow_State extends State<HomeScreenNow> {
             icon: Icon(FontAwesomeIcons.home),
             label: "Home",
           ),
-          BottomNavigationBarItem(
-            icon: Icon(FontAwesomeIcons.solidUser),
-            label: "Users",
-          ),
+          BottomNavigationBarItem(icon: Icon(Icons.devices), label: "Device"),
           BottomNavigationBarItem(
             icon: Icon(FontAwesomeIcons.school),
             label: "Schools",
           ),
           BottomNavigationBarItem(
             icon: Icon(FontAwesomeIcons.solidUser),
-            label: "Profile",
+            label: "Users",
           ),
           BottomNavigationBarItem(
             icon: Icon(FontAwesomeIcons.circleInfo),
