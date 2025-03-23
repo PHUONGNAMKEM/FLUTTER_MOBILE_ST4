@@ -9,6 +9,7 @@ import 'package:flutter_project_presentation_lastsegment/son_loginScreen.dart';
 import 'package:flutter_project_presentation_lastsegment/profile.dart';
 import 'package:flutter_project_presentation_lastsegment/report.dart';
 import 'package:flutter_project_presentation_lastsegment/stats.dart';
+import 'package:flutter_project_presentation_lastsegment/user.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_project_presentation_lastsegment/hoangphuc_blog.dart';
 
@@ -100,9 +101,10 @@ class HomeScreenNow_State extends State<HomeScreenNow> {
           }
         },
       ),
-      const MyApp_Report(),
-      const SchoolsScreen(),
       const MyApp_Profile(),
+      const SchoolsScreen(),
+      MyApp_Users(),
+
       const MyApp_Blog(),
     ];
   }
@@ -171,10 +173,7 @@ class HomeScreenNow_State extends State<HomeScreenNow> {
             icon: Icon(FontAwesomeIcons.home),
             label: "Home",
           ),
-          BottomNavigationBarItem(
-            icon: Icon(FontAwesomeIcons.fileInvoice),
-            label: "Reports",
-          ),
+          BottomNavigationBarItem(icon: Icon(Icons.devices), label: "Device"),
           BottomNavigationBarItem(
             icon: Icon(FontAwesomeIcons.school),
             label: "School",
