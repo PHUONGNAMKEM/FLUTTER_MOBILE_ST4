@@ -400,7 +400,7 @@ class _AddUserScreenState extends State<AddUserScreen> {
             school: selectedRole != "company" ? selectedSchool : null,
             className: selectedRole != "company" ? selectedClass : null,
           );
-          users.add(newUser); // Thêm vào danh sách global users
+          // users.add(newUser); // Thêm vào danh sách global users
           Navigator.pop(context, newUser); // Trả về để cập nhật UI
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text("User added successfully!")),

@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart'
     show ImagePicker, ImageSource, XFile;
 import 'dart:io' show File;
@@ -156,8 +157,8 @@ class _AddUserScreenState extends State<AddUserScreen_edit> {
 
   AppBar _buildAppBar() {
     return AppBar(
-      backgroundColor: Colors.transparent,
-      elevation: 0,
+      backgroundColor: Colors.blue,
+      elevation: 4,
       title: const Text(
         "Edit User",
         style: TextStyle(

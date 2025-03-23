@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_project_presentation_lastsegment/Schools.dart';
 import 'package:flutter_project_presentation_lastsegment/Users.dart';
+import 'package:flutter_project_presentation_lastsegment/device.dart';
 import 'package:flutter_project_presentation_lastsegment/nam/nam_demonhanh_dialog.dart';
 import 'package:flutter_project_presentation_lastsegment/phong_add_user.dart';
 // import 'package:flutter_project_presentation_lastsegment/nam_demonhanh_dialog.dart';
@@ -70,7 +71,8 @@ class HomeScreenNow_State extends State<HomeScreenNow> {
   // Thêm ở đây 1 list các page mà mình muốn chuyển hướng trong navigation bar
   final List<Widget> pages = [
     const HomeContent(),
-    const MyApp_Profile(),
+    // const MyApp_Profile(),
+    MyApp_Devices(),
     const SchoolsScreen(),
     MyApp_Users(),
 

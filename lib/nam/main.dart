@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_project_presentation_lastsegment/Schools.dart';
+import 'package:flutter_project_presentation_lastsegment/blog.dart';
+import 'package:flutter_project_presentation_lastsegment/device.dart';
 import 'package:flutter_project_presentation_lastsegment/nam/nam_demonhanh_dialog.dart';
 // import 'package:flutter_project_presentation_lastsegment/nam/phancong.dart';
 import 'package:flutter_project_presentation_lastsegment/nam/report_technician_model.dart';
@@ -101,11 +103,12 @@ class HomeScreenNow_State extends State<HomeScreenNow> {
           }
         },
       ),
-      const MyApp_Profile(),
+      MyApp_Devices(),
       const SchoolsScreen(),
       MyApp_Users(),
 
-      const MyApp_Blog(),
+      // const MyApp_Blog(),
+      MyApp_Blog_New(),
     ];
   }
 

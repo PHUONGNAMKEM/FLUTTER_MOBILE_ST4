@@ -162,7 +162,7 @@ class _UserListScreenState extends State<UserListScreen> {
           ),
           style: const TextStyle(color: Colors.white, fontSize: 18),
         ),
-        backgroundColor: const Color.fromRGBO(69, 209, 253, 1), // Đồng bộ màu
+        backgroundColor: Colors.blue, // Đồng bộ màu
       ),
       body: ListView.builder(
         padding: const EdgeInsets.all(10),
@@ -785,7 +785,7 @@ class UserDetailScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text("User Information"),
-        backgroundColor: const Color.fromRGBO(69, 209, 253, 1),
+        backgroundColor: Colors.blue,
       ),
       body: Center(
         child: Column(

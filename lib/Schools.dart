@@ -170,7 +170,7 @@ class _SchoolsScreenState extends State<SchoolsScreen> {
           style: TextStyle(color: Colors.white),
         ),
         centerTitle: true,
-        backgroundColor: Colors.indigo,
+        backgroundColor: Colors.blue,
       ),
       body:
           _schools.isEmpty
