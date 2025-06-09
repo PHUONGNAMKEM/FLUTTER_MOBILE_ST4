@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_project_presentation_lastsegment/nam_demonhanh_dialog.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:flutter_project_presentation_lastsegment/nam/main.dart';
-import 'package:flutter_project_presentation_lastsegment/nam/nam_demonhanh_dialog.dart';
+
 import 'package:flutter_project_presentation_lastsegment/son_loginScreen.dart';
-import 'package:flutter_project_presentation_lastsegment/profile.dart';
-import 'package:flutter_project_presentation_lastsegment/report.dart';
-import 'package:flutter_project_presentation_lastsegment/stats.dart';
 
 void main() {
   runApp(

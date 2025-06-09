@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -27,14 +29,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
     super.dispose();
   }
 
-  void _signUp() {
-    // Lấy giá trị từ các TextField
+  void _signUp() async {
     String username = _usernameController.text.trim();
     String email = _emailController.text.trim();
     String password = _passwordController.text.trim();
     String confirmPassword = _confirmPasswordController.text.trim();
 
-    // Ví dụ logic kiểm tra cơ bản
     if (username.isEmpty ||
         email.isEmpty ||
         password.isEmpty ||
@@ -42,14 +42,39 @@ class _SignUpScreenState extends State<SignUpScreen> {
       _showMessage('Vui lòng điền đầy đủ thông tin');
       return;
     }
+
     if (password != confirmPassword) {
       _showMessage('Mật khẩu xác nhận không khớp');
       return;
     }
 
-    // TODO: Gọi API hoặc xử lý logic đăng ký tài khoản ở đây
-    // Giả sử đăng ký thành công, ta có thể chuyển về trang Home hoặc Login
-    _showMessage('Đăng ký thành công!');
+    try {
+      final userCredential = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(email: email, password: password);
+
+      await FirebaseFirestore.instance
+          .collection('user')
+          .doc(userCredential.user!.uid)
+          .set({
+            'name': username,
+            'email': email,
+            'role': 'technician',
+            'schoolId': null,
+            'classId': null,
+            'isAvailable': true,
+          });
+
+      _showMessage('Đăng ký thành công!');
+      Navigator.pop(context);
+    } on FirebaseAuthException catch (e) {
+      String message = 'Đăng ký thất bại';
+      if (e.code == 'email-already-in-use') {
+        message = 'Email đã được đăng ký';
+      } else if (e.code == 'weak-password') {
+        message = 'Mật khẩu quá yếu (ít nhất 6 ký tự)';
+      }
+      _showMessage(message);
+    }
   }
 
   void _showMessage(String message) {
@@ -68,21 +93,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // Logo hoặc hình ảnh minh hoạ
-              Image.asset(
-                'images/computer1.png',
-                width: 150,
-                height: 150,
-                fit: BoxFit.cover,
-              ),
+              Image.asset('images/computer1.png', width: 150, height: 150),
               const SizedBox(height: 8),
               const Text(
                 'Hệ Thống Quản Lý Thiết Bị Trường Học',
                 style: TextStyle(fontSize: 16, color: Colors.grey),
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 20),
-              // Nhập Username
+              const SizedBox(height: 15),
               TextField(
                 controller: _usernameController,
                 decoration: const InputDecoration(
@@ -92,7 +110,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 ),
               ),
               const SizedBox(height: 15),
-              // Nhập Email
               TextField(
                 controller: _emailController,
                 keyboardType: TextInputType.emailAddress,
@@ -103,7 +120,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 ),
               ),
               const SizedBox(height: 15),
-              // Nhập Mật khẩu
               TextField(
                 controller: _passwordController,
                 obscureText: _isObscurePassword,
@@ -126,7 +142,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 ),
               ),
               const SizedBox(height: 15),
-              // Nhập Xác nhận Mật khẩu
               TextField(
                 controller: _confirmPasswordController,
                 obscureText: _isObscureConfirmPassword,
@@ -149,7 +164,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 ),
               ),
               const SizedBox(height: 20),
-              // Nút Sign Up
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   minimumSize: const Size(double.infinity, 50),
@@ -162,16 +176,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 ),
               ),
               const SizedBox(height: 15),
-              // Hoặc đăng ký với...
               const Text('or continue with'),
               const SizedBox(height: 15),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   OutlinedButton.icon(
-                    onPressed: () {
-                      // TODO: Đăng ký bằng Google
-                    },
+                    onPressed: () {},
                     icon: const FaIcon(
                       FontAwesomeIcons.google,
                       color: Colors.red,
@@ -180,9 +191,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   ),
                   const SizedBox(width: 10),
                   OutlinedButton.icon(
-                    onPressed: () {
-                      // TODO: Đăng ký bằng Apple
-                    },
+                    onPressed: () {},
                     icon: const FaIcon(
                       FontAwesomeIcons.apple,
                       color: Colors.black,
@@ -192,7 +201,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 ],
               ),
               const SizedBox(height: 10),
-              // Quay lại màn hình đăng nhập
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -200,8 +208,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   TextButton(
                     onPressed: () {
                       Navigator.pop(context);
-                      // Hoặc Navigator.push() tuỳ cách bạn quản lý route.
-                      // Ví dụ: Navigator.push(context, MaterialPageRoute(builder: (context) => LoginScreen()));
                     },
                     child: const Text(
                       'Sign In',

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_project_presentation_lastsegment/SignInScreen.dart';
+import 'package:flutter_project_presentation_lastsegment/main.dart';
+
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:flutter_project_presentation_lastsegment/demoson.dart';
-import 'package:flutter_project_presentation_lastsegment/nam/main.dart';
 
 void main() {
   runApp(LoginScreen_App());
@@ -34,6 +35,31 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
+  void _signIn() async {
+    String email = _usernameController.text.trim();
+    String password = _passwordController.text.trim();
+
+    try {
+      UserCredential userCredential = await FirebaseAuth.instance
+          .signInWithEmailAndPassword(email: email, password: password);
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => HomeScreenNow(username: email)),
+      );
+    } on FirebaseAuthException catch (e) {
+      String message = 'Đăng nhập thất bại';
+      if (e.code == 'user-not-found') {
+        message = 'Không tìm thấy người dùng';
+      } else if (e.code == 'wrong-password') {
+        message = 'Sai mật khẩu';
+      }
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(message)));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,12 +71,7 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Image.asset(
-                  'images/computer1.png',
-                  width: 150,
-                  height: 150,
-                  fit: BoxFit.cover,
-                ),
+                Image.asset('images/computer1.png', width: 150, height: 150),
                 SizedBox(height: 8),
                 Text(
                   'Hệ Thống Quản Lý Thiết Bị Trường Học',
@@ -83,15 +104,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     minimumSize: Size(double.infinity, 50),
                     backgroundColor: Color.fromRGBO(69, 209, 253, 1),
                   ),
-                  onPressed: () {
-                    String username = _usernameController.text;
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => HomeScreenNow(username: username),
-                      ),
-                    );
-                  },
+                  onPressed: _signIn,
                   child: Text('Sign In', style: TextStyle(color: Colors.white)),
                 ),
                 SizedBox(height: 15),
@@ -135,24 +148,6 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                   ],
-                ),
-                SizedBox(height: 10),
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => DemoFormScreen()),
-                    );
-                  },
-                  style: ButtonStyle(
-                    backgroundColor: WidgetStateProperty.all(
-                      Color.fromRGBO(69, 209, 253, 1),
-                    ),
-                  ),
-                  child: Text(
-                    "Đi Đến Demo Screen",
-                    style: TextStyle(color: Colors.white),
-                  ),
                 ),
               ],
             ),

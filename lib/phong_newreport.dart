@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 void main() => runApp(const MyReport());
@@ -32,6 +34,13 @@ class _AddProjectScreenState extends State<AddProjectScreen> {
   final List<String> devices = ["Device 1", "Device 2", "Device 3", "Device 4"];
   final List<String> schools = ["School A", "School B", "School C", "School D"];
   final List<String> rooms = ["Room 1", "Room 2", "Room 3", "Room 4"];
+
+  @override
+  void initState() {
+    super.initState();
+    startDate = DateTime.now();
+    endDate = DateTime.now();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -234,7 +243,7 @@ class _AddProjectScreenState extends State<AddProjectScreen> {
         padding: const EdgeInsets.symmetric(vertical: 14),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       ),
-      onPressed: () {
+      onPressed: () async {
         setState(() => isSubmitted = true);
 
         if (_formKey.currentState!.validate() &&
@@ -243,13 +252,37 @@ class _AddProjectScreenState extends State<AddProjectScreen> {
             endDate != null &&
             selectedSchool != null &&
             selectedRoom != null) {
+          final reportData = {
+            "schoolId": "school123", // lấy theo user đăng nhập
+            "classId": "class456",
+            "deviceId": selectedDevice, // hoặc device ID thật
+            "reporterId": FirebaseAuth.instance.currentUser?.email ?? 'unknown',
+            "description": _descriptionController.text,
+            "status": "Urgent",
+            "assignedTo": null,
+            "createdAt": DateTime.now(),
+            "updatedAt": DateTime.now(),
+            "history": [
+              {
+                "status": "Urgent",
+                "timestamp": DateTime.now(),
+                "updatedBy":
+                    FirebaseAuth.instance.currentUser?.email ?? 'unknown',
+              },
+            ],
+          };
+
+          // Ghi dữ liệu lên Firestore
+          await FirebaseFirestore.instance
+              .collection('reports')
+              .add(reportData);
+
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text("Report created successfully!")),
           );
-          Future.delayed(
-            const Duration(seconds: 1),
-            () => Navigator.pop(context),
-          );
+
+          // Quay lại màn hình chính
+          Navigator.pop(context);
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text("Please fill all required fields")),

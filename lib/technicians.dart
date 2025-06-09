@@ -1,22 +1,68 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_project_presentation_lastsegment/nam/report_technician_model.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:flutter_project_presentation_lastsegment/report_technician_model.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class TechnicianScreen extends StatefulWidget {
+  final String technicianId;
   final List<Technician> technicians;
-  final String technicianId; // ID của kỹ thuật viên đang xem
 
   const TechnicianScreen({
     super.key,
-    required this.technicians,
     required this.technicianId,
+    required this.technicians,
   });
 
   @override
   State<TechnicianScreen> createState() => _TechnicianScreenState();
 }
 
+//chổ để load danh sách task của nhân viên đang login hiện tải để xác nhận là đã hoàn thành công việc được giao hay chưa
 class _TechnicianScreenState extends State<TechnicianScreen> {
+  List<Report> assignedReports = [];
+
+  @override
+  void initState() {
+    super.initState();
+    fetchAssignedReports();
+  }
+
+  void fetchAssignedReports() async {
+    final userEmail = FirebaseAuth.instance.currentUser?.email;
+
+    // 🔍 Lấy technicianId từ collection `technicians` theo email
+    final techSnap =
+        await FirebaseFirestore.instance
+            .collection('user')
+            .where('email', isEqualTo: userEmail)
+            .limit(1)
+            .get();
+
+    // if (techSnap.docs.isEmpty) {
+    //   print("❌ Technician not found for email: $userEmail");
+    //   return;
+    // }
+
+    final technicianId = techSnap.docs.first.id;
+
+    // print("🛠 Technician ID resolved: $technicianId");
+
+    // 🔍 Truy vấn các report được giao theo ID vừa lấy
+    final reportSnap =
+        await FirebaseFirestore.instance
+            .collection('reports')
+            .where('assignedTo', isEqualTo: technicianId)
+            .where('status', whereIn: ['In Progress', 'Completed'])
+            .get();
+
+    // print("🔍 Số lượng report lấy được: ${reportSnap.docs.length}");
+
+    setState(() {
+      assignedReports =
+          reportSnap.docs.map((doc) => Report.fromFirestore(doc)).toList();
+    });
+  }
+
   void _showCompletionDialog(BuildContext context, Report report) {
     showDialog(
       context: context,
@@ -27,32 +73,36 @@ class _TechnicianScreenState extends State<TechnicianScreen> {
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.pop(dialogContext); // Đóng hộp thoại nếu chọn "Chưa"
+                Navigator.pop(dialogContext);
               },
               child: Text("Chưa"),
             ),
             TextButton(
-              onPressed: () {
-                // Cập nhật trạng thái report thành "Completed"
-                setState(() {
-                  report.status = "Completed";
-                  // Tìm kỹ thuật viên và cập nhật trạng thái
-                  final technician = widget.technicians.firstWhere(
-                    (t) => t.id == widget.technicianId,
-                  );
-                  technician.isAvailable =
-                      true; // Kỹ thuật viên trở lại trạng thái rảnh
-                  // technician.assignedReports.removeWhere(
-                  //   (r) => r.id == report.id,
-                  // ); // Xóa report khỏi danh sách phân công
-                });
+              onPressed: () async {
+                Navigator.pop(dialogContext);
 
-                // Trả dữ liệu về HomeContent để cập nhật UI
-                Navigator.pop(dialogContext); // Đóng hộp thoại
-                Navigator.pop(
-                  context,
-                  report,
-                ); // Trả report đã cập nhật về màn hình trước
+                final user = FirebaseAuth.instance.currentUser;
+
+                await FirebaseFirestore.instance
+                    .collection('reports')
+                    .doc(report.id)
+                    .update({
+                      'status': 'Completed',
+                      'updatedAt': DateTime.now(),
+                      'history': FieldValue.arrayUnion([
+                        {
+                          'status': 'Completed',
+                          'timestamp': Timestamp.now(),
+                          'updatedBy': user?.email ?? 'unknown',
+                        },
+                      ]),
+                    });
+
+                // setState(() {
+                //   report.status = 'Completed';
+                //   assignedReports.removeWhere((r) => r.id == report.id);
+                // });
+                fetchAssignedReports();
               },
               child: Text("Rồi"),
             ),
@@ -64,19 +114,10 @@ class _TechnicianScreenState extends State<TechnicianScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // Lọc các report được phân công cho kỹ thuật viên này
-    final assignedReports =
-        widget.technicians
-            .firstWhere((t) => t.id == widget.technicianId)
-            .assignedReports;
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color.fromRGBO(69, 209, 253, 1),
-        title: Text(
-          "Assigned Tasks",
-          style: TextStyle(color: Colors.white, fontSize: 20),
-        ),
+        title: Text("Assigned Tasks", style: TextStyle(color: Colors.white)),
       ),
       body: Column(
         children: [
@@ -105,7 +146,6 @@ class _TechnicianScreenState extends State<TechnicianScreen> {
                         return GestureDetector(
                           onTap: () {
                             if (report.status == "In Progress") {
-                              // Chỉ hiển thị dialog nếu trạng thái là "In Progress"
                               _showCompletionDialog(context, report);
                             }
                           },
@@ -200,7 +240,6 @@ class _TechnicianScreenState extends State<TechnicianScreen> {
                                     style: TextStyle(
                                       fontSize: 16,
                                       color: Color.fromRGBO(127, 134, 144, 1),
-                                      fontWeight: FontWeight.w400,
                                     ),
                                   ),
                                   SizedBox(height: 8),
@@ -209,7 +248,6 @@ class _TechnicianScreenState extends State<TechnicianScreen> {
                                     style: TextStyle(
                                       fontSize: 16,
                                       color: Color.fromRGBO(127, 134, 144, 1),
-                                      fontWeight: FontWeight.w400,
                                     ),
                                     overflow: TextOverflow.ellipsis,
                                     maxLines: 2,
@@ -229,11 +267,10 @@ class _TechnicianScreenState extends State<TechnicianScreen> {
                                             144,
                                             1,
                                           ),
-                                          fontWeight: FontWeight.w400,
                                         ),
                                       ),
                                       Text(
-                                        "5h ago", // Có thể thay bằng logic thời gian thực
+                                        "5h ago",
                                         style: TextStyle(
                                           fontSize: 16,
                                           color: Color.fromRGBO(
@@ -242,7 +279,6 @@ class _TechnicianScreenState extends State<TechnicianScreen> {
                                             144,
                                             1,
                                           ),
-                                          fontWeight: FontWeight.w400,
                                         ),
                                       ),
                                     ],
