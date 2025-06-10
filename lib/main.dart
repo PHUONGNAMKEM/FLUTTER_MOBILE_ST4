@@ -13,8 +13,9 @@ import 'package:flutter_project_presentation_lastsegment/phong_newreport.dart';
 import 'package:flutter_project_presentation_lastsegment/report_technician_model.dart';
 import 'package:flutter_project_presentation_lastsegment/son_loginScreen.dart';
 import 'package:flutter_project_presentation_lastsegment/technicians.dart';
-import 'package:flutter_project_presentation_lastsegment/user.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
+import 'package:flutter_project_presentation_lastsegment/user/user_management_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -70,14 +71,13 @@ class HomeScreenNow_State extends State<HomeScreenNow> {
         technicians: technicians,
         onReportUpdated: (updatedReport) {
           if (mounted) {
-            // Gọi setState để cập nhật giao diện nếu cần
             setState(() {});
           }
         },
       ),
       MyApp_Devices(),
       const SchoolsScreen(),
-      MyApp_Users(),
+      const UserListScreen(),
 
       // const MyApp_Blog(),
       MyApp_Blog_New(),
@@ -110,7 +110,7 @@ class HomeScreenNow_State extends State<HomeScreenNow> {
       ),
       MyApp_Devices(),
       const SchoolsScreen(),
-      MyApp_Users(),
+      const UserListScreen(),
       MyApp_Blog_New(),
     ];
   }
