@@ -382,7 +382,6 @@ class _UserFormScreenState extends State<UserFormScreen> {
         : _selectedSchoolId == null
             ? "Vui lòng chọn trường trước"
             : "Select Class"),
-    // Thêm thuộc tính disabledHint
     disabledHint: _selectedRole != null && !_schoolRequiredRoles.contains(_selectedRole!)
         ? const Text("Không áp dụng cho vai trò này")
         : (_isClassesLoading
