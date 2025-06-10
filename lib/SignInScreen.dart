@@ -20,6 +20,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
   bool _isObscurePassword = true;
   bool _isObscureConfirmPassword = true;
 
+  bool _isStudent = false;
+  bool _studentModeEnabled = false;
+  String? _selectedSchoolId;
+  String? _selectedSchoolName;
+  String? _selectedClassId;
+  String? _selectedClassName;
+
+  List<Map<String, dynamic>> _schools = [];
+  List<Map<String, dynamic>> _classes = [];
+
   @override
   void dispose() {
     _usernameController.dispose();
@@ -27,6 +37,32 @@ class _SignUpScreenState extends State<SignUpScreen> {
     _passwordController.dispose();
     _confirmPasswordController.dispose();
     super.dispose();
+  }
+
+  Future<void> _loadSchools() async {
+    final snapshot =
+        await FirebaseFirestore.instance.collection('schools').get();
+    setState(() {
+      _schools =
+          snapshot.docs
+              .map((doc) => {'id': doc['schoolId'], 'name': doc['schoolName']})
+              .toList();
+    });
+  }
+
+  Future<void> _loadClasses(String schoolId) async {
+    final snapshot =
+        await FirebaseFirestore.instance
+            .collection('classes')
+            .where('schoolId', isEqualTo: schoolId)
+            .get();
+
+    setState(() {
+      _classes =
+          snapshot.docs
+              .map((doc) => {'id': doc['classId'], 'name': doc['className']})
+              .toList();
+    });
   }
 
   void _signUp() async {
@@ -48,6 +84,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
       return;
     }
 
+    if (_studentModeEnabled) {
+      if (_selectedSchoolId == null || _selectedClassId == null) {
+        _showMessage('Vui lòng chọn trường và lớp học');
+        return;
+      }
+    }
+
     try {
       final userCredential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password);
@@ -58,10 +101,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
           .set({
             'name': username,
             'email': email,
-            'role': 'technician',
-            'schoolId': null,
-            'classId': null,
-            'isAvailable': true,
+            'role': _isStudent ? 'teacher' : 'technician',
+            'schoolId': _isStudent ? _selectedSchoolId : null,
+            'classId': _isStudent ? _selectedClassId : null,
+            'isAvailable':
+                !_isStudent, // nếu là giáo viên thì ko cần isAvailable
           });
 
       _showMessage('Đăng ký thành công!');
@@ -81,6 +125,23 @@ class _SignUpScreenState extends State<SignUpScreen> {
     ScaffoldMessenger.of(
       context,
     ).showSnackBar(SnackBar(content: Text(message)));
+  }
+
+  void _updateStudentStatus() {
+    if (_studentModeEnabled &&
+        _selectedSchoolId != null &&
+        _selectedClassId != null) {
+      _isStudent = true;
+    } else {
+      _isStudent = false;
+    }
+    setState(() {}); // cập nhật UI
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _loadSchools();
   }
 
   @override
@@ -163,7 +224,81 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   ),
                 ),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 10),
+              CheckboxListTile(
+                title: const Text("Are you a student?"),
+                value: _studentModeEnabled,
+                onChanged: (value) {
+                  setState(() {
+                    _studentModeEnabled = value!;
+                    _selectedSchoolId = null;
+                    _selectedClassId = null;
+                    _classes = [];
+                    _isStudent = false; // reset lại
+                  });
+                },
+              ),
+
+              if (_studentModeEnabled)
+                Column(
+                  children: [
+                    SizedBox(
+                      width: double.infinity,
+                      child: DropdownButtonFormField<String>(
+                        isExpanded: true,
+                        decoration: const InputDecoration(
+                          labelText: 'Select School',
+                        ),
+                        value: _selectedSchoolId,
+                        items:
+                            _schools.map((school) {
+                              return DropdownMenuItem<String>(
+                                value: school['id'],
+                                child: Text(school['name']),
+                              );
+                            }).toList(),
+                        onChanged: (value) async {
+                          _selectedSchoolId = value;
+                          _selectedClassId = null;
+                          _selectedSchoolName =
+                              _schools.firstWhere(
+                                (s) => s['id'] == value,
+                              )['name'];
+                          await _loadClasses(value!);
+                          _updateStudentStatus();
+                        },
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    SizedBox(
+                      width: double.infinity,
+                      child: DropdownButtonFormField<String>(
+                        isExpanded: true,
+                        decoration: const InputDecoration(
+                          labelText: 'Select Class',
+                        ),
+                        value: _selectedClassId,
+                        items:
+                            _classes.map((classItem) {
+                              return DropdownMenuItem<String>(
+                                value: classItem['id'],
+                                child: Text(classItem['name']),
+                              );
+                            }).toList(),
+                        onChanged: (value) {
+                          _selectedClassId = value;
+                          _selectedClassName =
+                              _classes.firstWhere(
+                                (c) => c['id'] == value,
+                              )['name'];
+                          _updateStudentStatus();
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+
+              const SizedBox(height: 10),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   minimumSize: const Size(double.infinity, 50),

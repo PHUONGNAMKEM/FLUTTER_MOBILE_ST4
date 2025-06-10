@@ -1,7 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_project_presentation_lastsegment/SignInScreen.dart';
 import 'package:flutter_project_presentation_lastsegment/main.dart';
+import 'package:flutter_project_presentation_lastsegment/teacher_page.dart';
+import 'package:flutter_project_presentation_lastsegment/technician_page.dart';
 
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -43,10 +46,49 @@ class _LoginScreenState extends State<LoginScreen> {
       UserCredential userCredential = await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email, password: password);
 
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => HomeScreenNow(username: email)),
-      );
+      // Truy vấn role từ Firestore
+      final snapshot =
+          await FirebaseFirestore.instance
+              .collection('user')
+              .doc(userCredential.user!.uid)
+              .get();
+
+      final userData = snapshot.data();
+      final role = userData?['role'];
+
+      if (role == 'admin') {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => HomeScreenNow(username: email),
+          ),
+        );
+      } else if (role == 'technician') {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => HomeScreenTechnician(username: email),
+          ),
+        );
+      } else if (role == 'teacher') {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder:
+                (context) => HomeScreenTeacher(
+                  username:
+                      userData?['name'] ??
+                      email, // Tên người dùng (hoặc email fallback)
+                  schoolId: userData?['schoolId'],
+                  classId: userData?['classId'],
+                ),
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Role không hợp lệ')));
+      }
     } on FirebaseAuthException catch (e) {
       String message = 'Đăng nhập thất bại';
       if (e.code == 'user-not-found') {

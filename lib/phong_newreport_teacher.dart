@@ -2,10 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-void main() => runApp(const MyReport());
+void main() => runApp(const MyTeacherReport());
 
-class MyReport extends StatelessWidget {
-  const MyReport({super.key});
+class MyTeacherReport extends StatelessWidget {
+  const MyTeacherReport({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -25,21 +25,20 @@ class _AddProjectScreenState extends State<AddProjectScreen> {
   DateTime? startDate;
   DateTime? endDate;
   String? selectedDevice;
-  String? selectedSchool;
-  String? selectedRoom;
-
-  List<Map<String, dynamic>> schoolOptions = [];
-  List<Map<String, dynamic>> classOptions = [];
-
-  String? selectedSchoolId;
-  String? selectedClassId;
+  String? currentClassId;
+  String? currentSchoolId;
 
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _descriptionController = TextEditingController();
 
   Future<List<String>> fetchAvailableDevices() async {
+    if (currentClassId == null) return [];
+
     final snapshot =
-        await FirebaseFirestore.instance.collection('devices').get();
+        await FirebaseFirestore.instance
+            .collection('devices')
+            .where('assignedTo', isEqualTo: currentClassId)
+            .get();
 
     return snapshot.docs.map((doc) => doc['name'] as String).toList();
   }
@@ -72,11 +71,26 @@ class _AddProjectScreenState extends State<AddProjectScreen> {
     startDate = DateTime.now();
     endDate = DateTime.now();
 
-    fetchSchools().then((schools) {
-      setState(() {
-        schoolOptions = schools;
-      });
-    });
+    _getCurrentUserInfo();
+  }
+
+  void _getCurrentUserInfo() async {
+    final currentUser = FirebaseAuth.instance.currentUser;
+    if (currentUser != null) {
+      final snapshot =
+          await FirebaseFirestore.instance
+              .collection('user')
+              .doc(currentUser.uid)
+              .get();
+
+      final data = snapshot.data();
+      if (data != null) {
+        setState(() {
+          currentSchoolId = data['schoolId'];
+          currentClassId = data['classId'];
+        });
+      }
+    }
   }
 
   @override
@@ -103,10 +117,6 @@ class _AddProjectScreenState extends State<AddProjectScreen> {
               _buildDatePicker(),
               const SizedBox(height: 20),
               _buildTimePicker(),
-              const SizedBox(height: 20),
-              _buildSchoolPicker(),
-              const SizedBox(height: 20),
-              _buildRoomPicker(),
               const SizedBox(height: 30),
               _buildSubmitButton(),
             ],
@@ -241,38 +251,6 @@ class _AddProjectScreenState extends State<AddProjectScreen> {
     );
   }
 
-  Widget _buildSchoolPicker() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _buildSelectionBox(
-          icon: Icons.school,
-          text: selectedSchool ?? "Select School",
-          isError: isSubmitted && selectedSchool == null,
-          onTap: _showSchoolPicker,
-        ),
-        if (isSubmitted && selectedSchool == null)
-          _buildErrorText("School is required!"),
-      ],
-    );
-  }
-
-  Widget _buildRoomPicker() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _buildSelectionBox(
-          icon: Icons.door_front_door_outlined,
-          text: selectedRoom ?? "Select Room",
-          isError: isSubmitted && selectedRoom == null,
-          onTap: _showClassPicker,
-        ),
-        if (isSubmitted && selectedRoom == null)
-          _buildErrorText("Room is required!"),
-      ],
-    );
-  }
-
   Widget _buildSubmitButton() {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
@@ -287,11 +265,11 @@ class _AddProjectScreenState extends State<AddProjectScreen> {
             selectedDevice != null &&
             startDate != null &&
             endDate != null &&
-            selectedSchool != null &&
-            selectedRoom != null) {
+            currentSchoolId != null &&
+            currentClassId != null) {
           final reportData = {
-            "schoolId": selectedSchoolId, // lấy theo user đăng nhập
-            "classId": selectedClassId,
+            "schoolId": currentSchoolId, // lấy theo user đăng nhập
+            "classId": currentClassId,
             "deviceId": selectedDevice, // hoặc device ID thật
             "reporterId": FirebaseAuth.instance.currentUser?.email ?? 'unknown',
             "description": _descriptionController.text,
@@ -396,76 +374,6 @@ class _AddProjectScreenState extends State<AddProjectScreen> {
                     Navigator.pop(context);
                   },
                 ),
-          ),
-    );
-  }
-
-  void _showSchoolPicker() {
-    showModalBottomSheet(
-      context: context,
-      builder:
-          (context) => ListView.builder(
-            itemCount: schoolOptions.length,
-            itemBuilder: (context, index) {
-              final school = schoolOptions[index];
-              return ListTile(
-                title: Text(school['name']),
-                onTap: () async {
-                  setState(() {
-                    selectedSchool = school['name'];
-                    selectedSchoolId = school['id'];
-                    selectedClassId = null;
-                    selectedRoom = null;
-                  });
-
-                  // Tải danh sách lớp sau khi chọn trường
-                  final classes = await fetchClassesBySchoolId(school['id']);
-                  setState(() {
-                    classOptions = classes;
-                  });
-
-                  Navigator.pop(context);
-                },
-              );
-            },
-          ),
-    );
-  }
-
-  void _showClassPicker() {
-    if (selectedSchoolId == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Vui lòng chọn trường trước.")),
-      );
-      return;
-    }
-
-    if (classOptions.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Trường này hiện chưa có lớp nào.")),
-      );
-      return;
-    }
-
-    showModalBottomSheet(
-      context: context,
-      builder:
-          (context) => ListView.builder(
-            itemCount: classOptions.length,
-            itemBuilder: (context, index) {
-              final classItem = classOptions[index];
-              return ListTile(
-                title: Text(classItem['name']),
-                onTap: () {
-                  setState(() {
-                    selectedRoom =
-                        classItem['name']; // hoặc đổi biến `selectedClass` tuỳ mục đích
-                    selectedClassId = classItem['id'];
-                  });
-                  Navigator.pop(context);
-                },
-              );
-            },
           ),
     );
   }

@@ -28,7 +28,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: HomeScreenNow(username: "Mặc Định"),
+      home: HomeScreenTechnician(username: "Mặc Định"),
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primaryColor: Color.fromRGBO(69, 209, 253, 1), // Màu chủ đạo
@@ -38,19 +38,19 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class HomeScreenNow extends StatefulWidget {
+class HomeScreenTechnician extends StatefulWidget {
   final String username; // Thêm thuộc tính nhận dữ liệu
 
-  const HomeScreenNow({
+  const HomeScreenTechnician({
     super.key,
     required this.username,
   }); // Constructor có tham số
 
   @override
-  State<HomeScreenNow> createState() => HomeScreenNow_State();
+  State<HomeScreenTechnician> createState() => HomeScreenNow_State();
 }
 
-class HomeScreenNow_State extends State<HomeScreenNow> {
+class HomeScreenNow_State extends State<HomeScreenTechnician> {
   int currentPage = 0;
   List<Technician> technicians = [];
 
@@ -69,18 +69,10 @@ class HomeScreenNow_State extends State<HomeScreenNow> {
         key: _homeContentKey,
         technicians: technicians,
         onReportUpdated: (updatedReport) {
-          if (mounted) {
-            // Gọi setState để cập nhật giao diện nếu cần
-            setState(() {});
-          }
+          if (mounted) setState(() {});
         },
       ),
-      MyApp_Devices(),
-      const SchoolsScreen(),
-      MyApp_Users(),
-
-      // const MyApp_Blog(),
-      MyApp_Blog_New(),
+      Center(child: Text('Info page')), // Tạm thời
     ];
   }
 
@@ -108,10 +100,6 @@ class HomeScreenNow_State extends State<HomeScreenNow> {
           if (mounted) setState(() {});
         },
       ),
-      MyApp_Devices(),
-      const SchoolsScreen(),
-      MyApp_Users(),
-      MyApp_Blog_New(),
     ];
   }
 
@@ -121,7 +109,7 @@ class HomeScreenNow_State extends State<HomeScreenNow> {
       appBar: AppBar(
         backgroundColor: Color.fromRGBO(69, 209, 253, 1),
         title: Text(
-          "Manage School Equipments",
+          "Technician Page",
           style: TextStyle(color: Colors.white, fontSize: 20),
         ),
         titleSpacing: 0,
@@ -164,12 +152,8 @@ class HomeScreenNow_State extends State<HomeScreenNow> {
       body: pages[currentPage],
 
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex:
-            currentPage, // thuộc tính currentIndex để xác định page hiện tại đang đứng ở đâu
+        currentIndex: currentPage,
         onTap: (value) {
-          // khi onTap tức là 1 item của bottomnav được chọn thì sẽ nhận vào index của mục đang nhấn
-          // nó là value (chỉ số mục đang nhấn, thì ontap sẽ gọi setstate và gán currentpage = với value đó)
-          // từ đó currentIndex thay đổi mà crIndex thay đổi thì flutter tự động cập nhật lại giao diện
           setState(() {
             currentPage = value;
           });
@@ -179,40 +163,12 @@ class HomeScreenNow_State extends State<HomeScreenNow> {
             icon: Icon(FontAwesomeIcons.home),
             label: "Home",
           ),
-          BottomNavigationBarItem(icon: Icon(Icons.devices), label: "Device"),
           BottomNavigationBarItem(
-            icon: Icon(FontAwesomeIcons.school),
-            label: "School",
+            icon: Icon(Icons.info_outline),
+            label: "Info",
           ),
-          BottomNavigationBarItem(
-            icon: Icon(FontAwesomeIcons.solidUser),
-            label: "User",
-          ),
-          // BottomNavigationBarItem(
-          //   icon: Icon(FontAwesomeIcons.circleInfo),
-          //   label: 'About us',
-          // ),
         ],
-        selectedItemColor: Color.fromRGBO(69, 209, 253, 1),
-        unselectedItemColor: Color.fromRGBO(75, 85, 99, 1),
-        backgroundColor: Color.fromRGBO(144, 202, 249, 1),
       ),
-      floatingActionButton:
-          currentPage ==
-                  0 // Kiểm tra nếu đang ở HomeContent
-              ? FloatingActionButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => MyReport(),
-                    ), // Chuyển đến màn hình báo cáo
-                  );
-                },
-                backgroundColor: Color.fromRGBO(69, 209, 253, 1),
-                child: Icon(Icons.add, color: Colors.white),
-              )
-              : null,
 
       drawer: Drawer(
         child: ListView(
@@ -232,39 +188,6 @@ class HomeScreenNow_State extends State<HomeScreenNow> {
               onTap: () {
                 Navigator.pop(context); // Đóng drawer
                 print('Navigated to Home');
-              },
-            ),
-            ListTile(
-              title: Text('My Assigned Tasks'),
-              onTap: () async {
-                Navigator.pop(context); // Đóng drawer
-
-                final user = FirebaseAuth.instance.currentUser;
-                final userEmail = user?.email;
-                if (userEmail != null) {
-                  final updatedReport = await Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder:
-                          (context) => TechnicianScreen(
-                            technicianId:
-                                userEmail, // lấy email hiện tại làm ID
-                            technicians: technicians,
-                          ),
-                    ),
-                  );
-
-                  if (updatedReport != null && mounted) {
-                    _homeContentKey.currentState?.updateReport(updatedReport);
-                    setState(() {});
-                  }
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text("Không tìm thấy thông tin người dùng"),
-                    ),
-                  );
-                }
               },
             ),
 
@@ -294,38 +217,87 @@ class HomeContent extends StatefulWidget {
 
   @override
   State<HomeContent> createState() => _HomeContentState();
-
-  // // Thêm phương thức công khai để cập nhật report từ bên ngoài
-  // void updatedReport(Report updatedReport) {
-  //   final state = createState();
-  //   if (state.mounted) {
-  //     state.updateReport(updatedReport);
-  //   }
-  // }
 }
 
 class _HomeContentState extends State<HomeContent> {
-  List<Report> reports = [];
+  List<Report> assignedReports = [];
 
   @override
   void initState() {
     super.initState();
-    _listenToReports();
+    fetchAssignedReports();
   }
 
-  void _listenToReports() {
-    FirebaseFirestore.instance
-        .collection('reports')
-        .orderBy('createdAt', descending: true)
-        .snapshots()
-        .listen((snapshot) {
-          final List<Report> loadedReports =
-              snapshot.docs.map((doc) => Report.fromFirestore(doc)).toList();
+  void fetchAssignedReports() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
 
-          setState(() {
-            reports = loadedReports;
-          });
-        });
+    final techSnap =
+        await FirebaseFirestore.instance
+            .collection('user')
+            .where('email', isEqualTo: user.email)
+            .limit(1)
+            .get();
+
+    final technicianId = techSnap.docs.first.id;
+
+    final reportSnap =
+        await FirebaseFirestore.instance
+            .collection('reports')
+            .where('assignedTo', isEqualTo: technicianId)
+            .where('status', whereIn: ['In Progress', 'Completed'])
+            .orderBy('createdAt', descending: true)
+            .get();
+
+    setState(() {
+      assignedReports =
+          reportSnap.docs.map((doc) => Report.fromFirestore(doc)).toList();
+    });
+  }
+
+  void _showCompletionDialog(BuildContext context, Report report) {
+    showDialog(
+      context: context,
+      builder: (BuildContext dialogContext) {
+        return AlertDialog(
+          title: Text("Xác nhận hoàn thành"),
+          content: Text("Bạn đã hoàn thành nhiệm vụ này chưa?"),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(dialogContext);
+              },
+              child: Text("Chưa"),
+            ),
+            TextButton(
+              onPressed: () async {
+                Navigator.pop(dialogContext);
+
+                final user = FirebaseAuth.instance.currentUser;
+
+                await FirebaseFirestore.instance
+                    .collection('reports')
+                    .doc(report.id)
+                    .update({
+                      'status': 'Completed',
+                      'updatedAt': DateTime.now(),
+                      'history': FieldValue.arrayUnion([
+                        {
+                          'status': 'Completed',
+                          'timestamp': Timestamp.now(),
+                          'updatedBy': user?.email ?? 'unknown',
+                        },
+                      ]),
+                    });
+
+                fetchAssignedReports(); // cập nhật lại danh sách
+              },
+              child: Text("Rồi"),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   void updateReport(Report updatedReport) {
@@ -341,20 +313,9 @@ class _HomeContentState extends State<HomeContent> {
 
   int countStatus(String status) {
     if (status == "Pending") {
-      return reports.where((r) => r.status == "Urgent").length;
+      return assignedReports.where((r) => r.status == "Urgent").length;
     }
-    return reports.where((r) => r.status == status).length;
-  }
-
-  String timeAgo(DateTime date) {
-    final difference = DateTime.now().difference(date);
-
-    if (difference.inSeconds < 60) return '${difference.inSeconds}s ago';
-    if (difference.inMinutes < 60) return '${difference.inMinutes}m ago';
-    if (difference.inHours < 24) return '${difference.inHours}h ago';
-    if (difference.inDays < 7) return '${difference.inDays}d ago';
-
-    return '${date.day}/${date.month}/${date.year}';
+    return assignedReports.where((r) => r.status == status).length;
   }
 
   @override
@@ -450,30 +411,20 @@ class _HomeContentState extends State<HomeContent> {
             ],
           ),
         ),
-        Container(
-          margin: EdgeInsets.all(12),
-          child: SizedBox(
-            height: 480,
-            child: SingleChildScrollView(
-              child: Column(
-                children:
-                    reports.map((report) {
+        Expanded(
+          child:
+              assignedReports.isEmpty
+                  ? Center(child: Text("No tasks assigned yet"))
+                  : ListView.builder(
+                    padding: EdgeInsets.all(12),
+                    itemCount: assignedReports.length,
+                    itemBuilder: (context, index) {
+                      final report = assignedReports[index];
                       return GestureDetector(
                         onTap:
-                            report.status == "Urgent"
-                                ? () async {
-                                  final updatedReport =
-                                      await showTechnicianAssignmentScreen(
-                                        context,
-                                        report,
-                                        widget.technicians,
-                                      );
-                                  if (updatedReport != null) {
-                                    updateReport(updatedReport);
-                                  }
-                                }
-                                : null, // nếu ko phải urgent thì không làm gì cả
-
+                            report.status == "In Progress"
+                                ? () => _showCompletionDialog(context, report)
+                                : null,
                         child: Card(
                           color: Colors.white,
                           elevation: 2,
@@ -578,7 +529,7 @@ class _HomeContentState extends State<HomeContent> {
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
-                                      "${report.reportedBy}",
+                                      "Reported by: ${report.reportedBy}",
                                       style: TextStyle(
                                         fontSize: 16,
                                         color: Color.fromRGBO(127, 134, 144, 1),
@@ -624,10 +575,8 @@ class _HomeContentState extends State<HomeContent> {
                           ),
                         ),
                       );
-                    }).toList(),
-              ),
-            ),
-          ),
+                    },
+                  ),
         ),
       ],
     );
@@ -731,150 +680,4 @@ class HistoryScreen extends StatelessWidget {
       ),
     );
   }
-}
-
-Future<Report?> showTechnicianAssignmentScreen(
-  BuildContext parentContext,
-  Report report,
-  List<Technician> technicians,
-) async {
-  Technician? selectedTechnician;
-
-  return await showModalBottomSheet<Report>(
-    context: parentContext,
-    isScrollControlled: true,
-    builder: (BuildContext modalContext) {
-      return StatefulBuilder(
-        builder: (BuildContext modalContext, StateSetter setModalState) {
-          final availableTechnicians =
-              technicians.where((t) => t.isAvailable).toList();
-
-          return Container(
-            height: MediaQuery.of(modalContext).size.height * 0.8,
-            padding: EdgeInsets.all(16),
-            child: Column(
-              children: [
-                Text(
-                  "Phân công kỹ thuật viên",
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
-                ),
-                SizedBox(height: 16),
-                Expanded(
-                  child: ListView.builder(
-                    itemCount: availableTechnicians.length,
-                    itemBuilder: (context, index) {
-                      final technician = availableTechnicians[index];
-                      final isSelected = selectedTechnician == technician;
-
-                      return GestureDetector(
-                        onTap: () {
-                          setModalState(() {
-                            selectedTechnician = technician;
-                          });
-                        },
-                        child: Card(
-                          margin: EdgeInsets.symmetric(vertical: 8),
-                          elevation: isSelected ? 4 : 2,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            side: BorderSide(
-                              color:
-                                  isSelected
-                                      ? Color.fromRGBO(69, 209, 253, 1)
-                                      : Colors.grey.withOpacity(0.5),
-                              width: isSelected ? 2 : 1,
-                            ),
-                          ),
-                          child: Padding(
-                            padding: EdgeInsets.all(16),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  technician.name,
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                                SizedBox(height: 8),
-                                Text(
-                                  "Trạng thái: Rảnh",
-                                  style: TextStyle(color: Colors.grey),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                ),
-                ElevatedButton(
-                  onPressed: () async {
-                    if (selectedTechnician != null) {
-                      final user = FirebaseAuth.instance.currentUser;
-
-                      // 🔥 Cập nhật Firestore report
-                      await FirebaseFirestore.instance
-                          .collection('reports')
-                          .doc(report.id)
-                          .update({
-                            'status': 'In Progress',
-                            'assignedTo': selectedTechnician!.id,
-                            'updatedAt': DateTime.now(),
-                            'history': FieldValue.arrayUnion([
-                              {
-                                'status': 'In Progress',
-                                'timestamp': Timestamp.now(),
-                                'updatedBy':
-                                    selectedTechnician?.email ?? 'unknown',
-                              },
-                            ]),
-                          });
-
-                      final updatedReport = Report(
-                        id: report.id,
-                        title: report.title,
-                        location: report.location,
-                        description: report.description,
-                        reportedBy: report.reportedBy,
-                        status: "In Progress",
-                        timestamp: report.timestamp,
-                        assignedTechnicianId: selectedTechnician!.id,
-                      );
-
-                      Navigator.pop(modalContext, updatedReport);
-
-                      ScaffoldMessenger.of(parentContext).showSnackBar(
-                        SnackBar(
-                          content: Text(
-                            "Đã phân công cho ${selectedTechnician!.name}",
-                          ),
-                        ),
-                      );
-                    } else {
-                      ScaffoldMessenger.of(modalContext).showSnackBar(
-                        SnackBar(
-                          content: Text("Vui lòng chọn một kỹ thuật viên"),
-                        ),
-                      );
-                    }
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Color.fromRGBO(69, 209, 253, 1),
-                    padding: EdgeInsets.symmetric(vertical: 16, horizontal: 32),
-                  ),
-                  child: Text(
-                    "Phân bổ ngay",
-                    style: TextStyle(color: Colors.white, fontSize: 16),
-                  ),
-                ),
-              ],
-            ),
-          );
-        },
-      );
-    },
-  );
 }

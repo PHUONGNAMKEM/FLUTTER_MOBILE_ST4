@@ -1,8 +1,12 @@
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
+import 'package:flutter_project_presentation_lastsegment/UploadImage/upImageToStorage.dart';
+import 'package:flutter_project_presentation_lastsegment/model/classes_model.dart';
 import 'package:flutter_project_presentation_lastsegment/phong_edit_device.dart'; // Import EditDeviceScreen
 import 'package:image_picker/image_picker.dart'; // Thêm image_picker
 import 'dart:io' show File;
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_project_presentation_lastsegment/device_service.dart';
 
 void main() {
   runApp(const MyApp_Devices());
@@ -22,6 +26,7 @@ class MyApp_Devices extends StatelessWidget {
 
 // Model Device
 class Device {
+  String? deviceId;
   String name;
   String type;
   String status;
@@ -30,6 +35,7 @@ class Device {
   List<Map<String, dynamic>>? maintenanceHistory;
 
   Device({
+    this.deviceId,
     required this.name,
     required this.type,
     required this.status,
@@ -37,6 +43,19 @@ class Device {
     this.imagePath,
     this.maintenanceHistory,
   });
+
+  // Convert Firestore document to Device object
+  factory Device.fromFirestore(DocumentSnapshot doc) {
+    final data = doc.data() as Map<String, dynamic>;
+    return Device(
+      deviceId: doc.id,
+      name: data['name'] ?? '',
+      type: data['type'] ?? '',
+      status: data['status'] ?? '',
+      assignedTo: data['assignedTo'],
+      imagePath: data['imagePath'],
+    );
+  }
 }
 
 // Danh sách thiết bị mẫu
@@ -73,59 +92,67 @@ List<Device> devices = [
 
 // DeviceListScreen
 class DeviceListScreen extends StatefulWidget {
-  const DeviceListScreen({super.key});
+  final String? classId; // bên class truyền vô để lọc nè
+  const DeviceListScreen({super.key, this.classId});
 
   @override
   _DeviceListScreenState createState() => _DeviceListScreenState();
 }
 
 class _DeviceListScreenState extends State<DeviceListScreen> {
+  final DeviceService deviceService = DeviceService();
+
   TextEditingController searchController = TextEditingController();
   List<Device> filteredDevices = devices;
 
-  void addDevice() async {
+  @override
+  void initState() {
+    super.initState();
+    // Lọc thiết bị dựa trên classId khi khởi tạo
+    // filterDevices(searchController.text);
+  }
+
+  void addDeviceFireBase() async {
     final newDevice = await Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => const AddDeviceScreen()),
     );
 
     if (newDevice != null) {
-      setState(() {
-        devices.add(newDevice as Device);
-        filterDevices(searchController.text);
-      });
+      await deviceService.addDevice(newDevice as Device);
+      // Không cần filterDevices vì StreamBuilder sẽ tự làm mới
     }
+    // await deviceService.addDevice(newDevice as Device);
   }
 
-  void editDevice(int index) async {
+  void editDevice(Device device) async {
     final updatedDevice = await Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (context) => EditDeviceScreen(device: devices[index]),
-      ),
+      MaterialPageRoute(builder: (context) => EditDeviceScreen(device: device)),
     );
 
     if (updatedDevice != null) {
-      setState(() {
-        devices[index] = updatedDevice;
-        filterDevices(searchController.text);
-      });
+      await deviceService.updateDevice(
+        device.deviceId!,
+        updatedDevice as Device,
+      );
+      // Không cần setState vì StreamBuilder sẽ tự cập nhật lại UI
     }
   }
 
-  void filterDevices(String query) {
-    setState(() {
-      filteredDevices =
-          devices
-              .where(
-                (device) =>
-                    device.name.toLowerCase().contains(query.toLowerCase()),
-              )
-              .toList();
-    });
-  }
+  // void filterDevices(String query) {
+  //   setState(() {
+  //     filteredDevices =
+  //         devices
+  //             .where(
+  //               (device) =>
+  //                   device.name.toLowerCase().contains(query.toLowerCase()),
+  //             )
+  //             .toList();
+  //   });
+  // }
 
-  void deleteDevice(int index) {
+  void deleteDevice(String deviceId) {
     showDialog(
       context: context,
       builder:
@@ -135,11 +162,8 @@ class _DeviceListScreenState extends State<DeviceListScreen> {
             actions: [
               TextButton(
                 child: const Text("Xóa"),
-                onPressed: () {
-                  setState(() {
-                    devices.removeAt(index);
-                    filterDevices(searchController.text);
-                  });
+                onPressed: () async {
+                  await deviceService.deleteDevice(deviceId);
                   Navigator.pop(context);
                 },
               ),
@@ -152,13 +176,19 @@ class _DeviceListScreenState extends State<DeviceListScreen> {
     );
   }
 
+  String searchQuery = '';
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: TextField(
           controller: searchController,
-          onChanged: filterDevices,
+          onChanged: (value) {
+            setState(() {
+              searchQuery = value.toLowerCase(); // Cập nhật searchQuery ở trên
+            });
+          },
           decoration: const InputDecoration(
             hintText: "Tìm kiếm thiết bị...",
             border: InputBorder.none,
@@ -169,71 +199,100 @@ class _DeviceListScreenState extends State<DeviceListScreen> {
         ),
         backgroundColor: Colors.blue,
       ),
-      body: ListView.builder(
-        padding: const EdgeInsets.all(10),
-        itemCount: filteredDevices.length,
-        itemBuilder: (context, index) {
-          final device = filteredDevices[index];
-          return Card(
-            elevation: 4,
-            margin: const EdgeInsets.symmetric(vertical: 8),
-            child: ListTile(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => DeviceDetailScreen(device: device),
-                  ),
+      body: StreamBuilder<List<Device>>(
+        stream: deviceService.deviceStream(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return const Center(child: Text('Không có thiết bị nào'));
+          }
+
+          // Lọc kết quả tìm kiếm
+          final searchText = searchController.text.toLowerCase();
+          final devices =
+              snapshot.data!.where((device) {
+                final matchesSearch = device.name.toLowerCase().contains(
+                  searchText,
                 );
-              },
-              leading:
-                  device.imagePath != null
-                      ? CircleAvatar(
-                        backgroundImage:
-                            kIsWeb
-                                ? NetworkImage(device.imagePath!)
-                                    as ImageProvider
-                                : FileImage(File(device.imagePath!))
-                                    as ImageProvider,
-                        radius: 25,
-                      )
-                      : const CircleAvatar(
-                        backgroundColor: Colors.grey,
-                        child: Icon(Icons.device_unknown, color: Colors.white),
-                        radius: 25,
+                final matchesClassId =
+                    widget.classId == null ||
+                    device.assignedTo == widget.classId;
+                return matchesSearch && matchesClassId;
+              }).toList();
+
+          return ListView.builder(
+            padding: const EdgeInsets.all(10),
+            itemCount: devices.length,
+            itemBuilder: (context, index) {
+              final device = devices[index];
+              return Card(
+                elevation: 4,
+                margin: const EdgeInsets.symmetric(vertical: 8),
+                child: ListTile(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder:
+                            (context) => DeviceDetailScreen(device: device),
                       ),
-              title: Text(
-                device.name,
-                style: const TextStyle(fontWeight: FontWeight.bold),
-              ),
-              subtitle: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text("Loại: ${device.type}"),
-                  Text("Trạng thái: ${device.status}"),
-                  if (device.assignedTo != null)
-                    Text("Đã thuê: ${device.assignedTo}"),
-                ],
-              ),
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  IconButton(
-                    icon: const Icon(Icons.edit, color: Colors.green),
-                    onPressed: () => editDevice(devices.indexOf(device)),
+                    );
+                  },
+                  leading:
+                      device.imagePath != null
+                          ? CircleAvatar(
+                            backgroundImage:
+                                kIsWeb
+                                    ? NetworkImage(device.imagePath!)
+                                        as ImageProvider
+                                    : FileImage(File(device.imagePath!))
+                                        as ImageProvider,
+                            radius: 25,
+                          )
+                          : const CircleAvatar(
+                            backgroundColor: Colors.grey,
+                            child: Icon(
+                              Icons.device_unknown,
+                              color: Colors.white,
+                            ),
+                            radius: 25,
+                          ),
+                  title: Text(
+                    device.name,
+                    style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
-                  IconButton(
-                    icon: const Icon(Icons.delete, color: Colors.red),
-                    onPressed: () => deleteDevice(devices.indexOf(device)),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text("Loại: ${device.type}"),
+                      Text("Trạng thái: ${device.status}"),
+                      if (device.assignedTo != null)
+                        Text("Đã thuê: ${device.assignedTo}"),
+                    ],
                   ),
-                ],
-              ),
-            ),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.edit, color: Colors.green),
+                        onPressed: () => editDevice(device),
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.delete, color: Colors.red),
+                        onPressed: () => deleteDevice(device.deviceId!),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
           );
         },
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: addDevice,
+        onPressed: addDeviceFireBase,
         backgroundColor: const Color.fromRGBO(69, 209, 253, 1),
         child: const Icon(Icons.add, color: Colors.white),
       ),
@@ -253,7 +312,11 @@ class _AddDeviceScreenState extends State<AddDeviceScreen> {
   bool isSubmitted = false;
   String? selectedType;
   String? selectedStatus;
+
   String? selectedAssignedTo;
+  List<ClassModel> classes = [];
+  String? selectedClassName; // để show tên lớp
+
   File? _imageFile;
   String? _imagePath;
   final _formKey = GlobalKey<FormState>();
@@ -263,6 +326,35 @@ class _AddDeviceScreenState extends State<AddDeviceScreen> {
   final List<String> deviceTypes = ["Máy chiếu", "Máy in", "Máy tính", "Khác"];
   final List<String> statuses = ["Sẵn sàng", "Đang sử dụng", "Bảo trì"];
   final List<String> schools = ["school123", "school456", "school789"];
+
+  // upload ảnh từ storage lên firestore
+  void _selectImage() async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder:
+            (context) => UploadImage(
+              onImageSelected: (imageUrl) {
+                setState(() {
+                  _imagePath = imageUrl;
+                });
+              },
+            ),
+      ),
+    );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    loadClasses();
+  }
+
+  Future<void> loadClasses() async {
+    final service = DeviceService();
+    classes = await service.fetchClasses();
+    setState(() {});
+  }
 
   Future<void> _pickImage(ImageSource source) async {
     final pickedFile = await _picker.pickImage(source: source);
@@ -295,6 +387,13 @@ class _AddDeviceScreenState extends State<AddDeviceScreen> {
                   _pickImage(ImageSource.camera);
                 },
               ),
+              TextButton(
+                child: const Text("Storage"),
+                onPressed: () {
+                  Navigator.pop(context);
+                  _selectImage();
+                },
+              ),
             ],
           ),
     );
@@ -305,8 +404,12 @@ class _AddDeviceScreenState extends State<AddDeviceScreen> {
     return Scaffold(
       backgroundColor: Colors.grey[100],
       appBar: AppBar(
-        title: const Text("Add Device"),
+        title: const Text("Add Device", style: TextStyle(color: Colors.white)),
         backgroundColor: const Color.fromRGBO(69, 209, 253, 1),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () => Navigator.pop(context),
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -324,9 +427,14 @@ class _AddDeviceScreenState extends State<AddDeviceScreen> {
                       radius: 50,
                       backgroundColor: Colors.grey[300],
                       backgroundImage:
-                          _imageFile != null
-                              ? FileImage(_imageFile!) as ImageProvider
-                              : null,
+                          _imagePath != null
+                              ? (_imagePath!.startsWith('http')
+                                  ? NetworkImage(_imagePath!) as ImageProvider
+                                  : FileImage(File(_imagePath!))
+                                      as ImageProvider)
+                              : (_imageFile != null
+                                  ? FileImage(_imageFile!) as ImageProvider
+                                  : null),
                       child:
                           _imageFile == null
                               ? const Icon(
@@ -414,7 +522,7 @@ class _AddDeviceScreenState extends State<AddDeviceScreen> {
       children: [
         _buildSelectionBox(
           icon: Icons.school,
-          text: selectedAssignedTo ?? "Select School (Optional)",
+          text: selectedClassName ?? "Chọn lớp (tùy chọn)",
           isError: false,
           onTap: _showAssignedToPicker,
           enabled: true,
@@ -563,31 +671,54 @@ class _AddDeviceScreenState extends State<AddDeviceScreen> {
     );
   }
 
+  // void _showAssignedToPicker() {
+  //   showModalBottomSheet(
+  //     context: context,
+  //     builder:
+  //         (context) => Column(
+  //           children: [
+  //             ListTile(
+  //               title: const Text("None"),
+  //               onTap:
+  //                   () => setState(() {
+  //                     selectedAssignedTo = null;
+  //                     Navigator.pop(context);
+  //                   }),
+  //             ),
+  //             ...schools.map(
+  //               (school) => ListTile(
+  //                 title: Text(school),
+  //                 onTap:
+  //                     () => setState(() {
+  //                       selectedAssignedTo = school;
+  //                       Navigator.pop(context);
+  //                     }),
+  //               ),
+  //             ),
+  //           ],
+  //         ),
+  //   );
+  // }
+
   void _showAssignedToPicker() {
     showModalBottomSheet(
       context: context,
       builder:
-          (context) => Column(
-            children: [
-              ListTile(
-                title: const Text("None"),
-                onTap:
-                    () => setState(() {
-                      selectedAssignedTo = null;
-                      Navigator.pop(context);
-                    }),
-              ),
-              ...schools.map(
-                (school) => ListTile(
-                  title: Text(school),
-                  onTap:
-                      () => setState(() {
-                        selectedAssignedTo = school;
-                        Navigator.pop(context);
-                      }),
+          (context) => ListView.builder(
+            itemCount: classes.length,
+            itemBuilder:
+                (context, index) => ListTile(
+                  title: Text(classes[index].className),
+                  subtitle: Text(classes[index].classId),
+                  onTap: () {
+                    setState(() {
+                      selectedAssignedTo =
+                          classes[index].classId; // Gán classId
+                      selectedClassName = classes[index].className;
+                    });
+                    Navigator.pop(context);
+                  },
                 ),
-              ),
-            ],
           ),
     );
   }

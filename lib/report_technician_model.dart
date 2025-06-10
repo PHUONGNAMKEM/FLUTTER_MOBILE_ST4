@@ -86,28 +86,24 @@ class ReportHistory {
 class Technician {
   String id;
   String name;
+  String email; // 👈 Thêm dòng này
   bool isAvailable;
   List<Report> assignedReports;
 
   Technician({
     required this.id,
     required this.name,
+    required this.email,
     required this.isAvailable,
     this.assignedReports = const [],
   });
-
-  Technician.fixed({
-    required this.id,
-    required this.name,
-    required this.isAvailable,
-    List<Report>? assignedReports,
-  }) : assignedReports = assignedReports ?? [];
 
   factory Technician.fromFirestore(DocumentSnapshot doc) {
     final data = doc.data() as Map<String, dynamic>;
     return Technician(
       id: doc.id,
       name: data['name'] ?? '',
+      email: data['email'] ?? '',
       isAvailable: data['isAvailable'] ?? false,
     );
   }
